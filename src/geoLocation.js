@@ -11,8 +11,8 @@ const geoLocation = [
  },
  {
    "state": "Maharashtra",
-   "latitude": 19.7515,
-   "longitude": 75.7139
+   "latitude": 18.5204,
+   "longitude": 73.8567
  },
  {
    "state": "Goa",
@@ -26,8 +26,8 @@ const geoLocation = [
  },
  {
    "state": "Karnataka",
-   "latitude": 15.3173,
-   "longitude": 75.7139
+   "latitude": 12.9716,
+   "longitude": 77.5946
  },
  {
    "state": "Gujarat",
@@ -138,11 +138,6 @@ const geoLocation = [
    "state": "Meghalaya",
    "latitude": 25.467,
    "longitude": 91.3662
- },
- {
-   "state": "Mizoram",
-   "latitude": 23.1645,
-   "longitude": 92.9376
  },
  {
    "state": "Mizoram",
