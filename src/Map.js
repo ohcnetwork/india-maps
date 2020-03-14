@@ -57,7 +57,7 @@ export default class MapContainer extends Component<{}> {
             if(locationData.cases === 0)
              return null;
             return(
-            <Circle key={location.state} center={[location.latitude, location.longitude]} fillColor="blue" radius={8000*locationData.cases}>
+            <Circle key={location.state} center={[location.latitude, location.longitude]} fillColor="blue" radius={10000 + (locationData.cases*2500)}>
               <Popup>
               <h3>{location.state}</h3><br/>
               Cases: {locationData.cases},<br/>
