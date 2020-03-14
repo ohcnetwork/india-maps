@@ -78,6 +78,7 @@ export default class MapContainer extends Component<{}> {
           Total Cured/Discharged: {this.state.indiaData.countryData.cured_dischargedTotal} <br/>
           Total Deaths: {this.state.indiaData.countryData.deathsTotal}
           </h4>
+          <img src="./coronaSafeLogo.svg" alt="CoronaSafe Logo"/>
         </div>}
       </div>
     )
