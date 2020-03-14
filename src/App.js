@@ -1,24 +1,23 @@
-import React from 'react';
+import React, {StrictMode} from 'react';
+import Map from './Map.js'
+import indiaData from './indiaData.json';
+
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div id="mapid" style={{height: '100vh'}}>
+      <Map/>
+      <div style={{position:"absolute", background:"white", top:"15px", right:"15px", padding:"20px", zIndex:"100"}}>
+        <h4>
+        Local Patients: {indiaData.countryData.localTotal} <br/>
+        International Patients: {indiaData.countryData.intTotal} <br/>
+        Total Cases: {indiaData.countryData.total} <br/>
+        Total Cured/Discharged: {indiaData.countryData.cured_dischargedTotal} <br/>
+        Total Deaths: {indiaData.countryData.deathsTotal}
+        </h4>
+      </div>
     </div>
   );
 }
