@@ -109,10 +109,10 @@ export default class MapContainer extends Component<{}> {
                return null;
               }
               return(
-              <Circle key={location.state_province ? location.state_province : location.country_region} center={[location.latitude, location.longitude]} fillColor="blue" radius={15000 + (location.confirmed*20)}>
+              <Circle key={location.province_state ? (location.province_state + "." +  location.country_region) : location.country_region} center={[location.latitude, location.longitude]} fillColor="blue" radius={15000 + (location.confirmed*20)}>
                 <Popup>
-                <h3>{location.state_province ? location.state_province : location.country_region}</h3>
-                {location.state_province && location.country_region + ",<br/>"}
+                <h3>{location.province_state ? location.province_state : location.country_region}</h3>
+                {location.province_state && <span>{location.country_region}<br/></span>}
                 Cases: {location.confirmed},<br/>
                 Cured/Discharged: {location.recovered},<br/>
                 Deaths: {location.deaths},<br/>
