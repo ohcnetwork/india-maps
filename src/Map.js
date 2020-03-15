@@ -123,7 +123,7 @@ export default class MapContainer extends Component<{}> {
         </Map>
         {this.state.indiaData &&
         <div style={{position:"absolute", background:"white", top:"15px", right:"15px", padding:"20px", zIndex:"100"}}>
-          {this.state.countryStats &&<h3> Confirmed Cases: {this.state.countryStats.confirmed} <br/> </h3>}
+          {this.state.countryStats &&<h3> Confirmed Cases: {this.state.countryStats.confirmed > this.state.indiaData.countryData.total ? this.state.countryStats.confirmed : this.state.indiaData.countryData.total } <br/> </h3>}
           <h4>
           Total Cases(MoHFS): {this.state.indiaData.countryData.total} <br/>
           Local Patients: {this.state.indiaData.countryData.localTotal} <br/>
