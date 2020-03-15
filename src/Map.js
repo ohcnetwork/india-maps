@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import {
   Circle,
-  CircleMarker,
   Map,
-  Polygon,
-  Polyline,
   Popup,
-  Rectangle,
   TileLayer,
 } from 'react-leaflet';
+
 import geoLocation from './geoLocation.js';
 import logo from './logo.svg';
 import './App.css';
@@ -39,6 +36,23 @@ export default class MapContainer extends Component<{}> {
             isLoaded: true,
             error
           });
+        }
+      )
+    fetch("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/03-14-2020.csv")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          console.log("Received Response")
+          // this.setState({
+          //   indiaData: result
+          // });
+        },
+        (error) => {
+          console.log("Error Response")
+          // this.setState({
+          //   isLoaded: true,
+          //   error
+          // });
         }
       )
   }
@@ -79,6 +93,8 @@ export default class MapContainer extends Component<{}> {
           Total Deaths: {this.state.indiaData.countryData.deathsTotal}
           </h4>
           <img src="./coronaSafeLogo.svg" alt="CoronaSafe Logo"/>
+          Updated Live with data from <br/>
+          <a href="https://www.mohfw.gov.in/">Ministry of Health and Family Welfare</a>, India
         </div>}
       </div>
     )
