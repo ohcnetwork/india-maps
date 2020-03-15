@@ -91,7 +91,7 @@ export default class MapContainer extends Component<{}> {
               if(locationData.cases === 0)
                return null;
               return(
-              <Circle key={location.state} center={[location.latitude, location.longitude]} fillColor="blue" radius={10000 + (locationData.cases*2000)}>
+              <Circle key={location.state} center={[location.latitude, location.longitude]} fillColor="blue" radius={15000 + (locationData.cases*2000)}>
                 <Popup>
                 <h3>{location.state}</h3><br/>
                 Cases: {locationData.cases},<br/>
@@ -109,7 +109,7 @@ export default class MapContainer extends Component<{}> {
                return null;
               }
               return(
-              <Circle key={location.state_province ? location.state_province : location.country_region} center={[location.latitude, location.longitude]} fillColor="blue" radius={1000 + (location.confirmed*25)}>
+              <Circle key={location.state_province ? location.state_province : location.country_region} center={[location.latitude, location.longitude]} fillColor="blue" radius={15000 + (location.confirmed*20)}>
                 <Popup>
                 <h3>{location.state_province ? location.state_province : location.country_region}</h3>
                 {location.state_province && location.country_region + ",<br/>"}
@@ -122,7 +122,7 @@ export default class MapContainer extends Component<{}> {
           }
         </Map>
         {this.state.indiaData &&
-        <div style={{position:"absolute", background:"white", top:"15px", right:"15px", padding:"20px", zIndex:"100"}}>
+        <div className="information-head" >
           {this.state.countryStats &&<h3> Confirmed Cases: {this.state.countryStats.confirmed > this.state.indiaData.countryData.total ? this.state.countryStats.confirmed : this.state.indiaData.countryData.total } <br/> </h3>}
           <h4>
           Total Cases(MoHFS): {this.state.indiaData.countryData.total} <br/>
