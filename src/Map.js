@@ -21,7 +21,8 @@ export default class MapContainer extends Component<{}> {
     this.state = {
       indiaData: null,
       intData: null,
-      countryStats: null
+      countryStats: null,
+      worldStats: null
     }
   }
   setInternationalData = (data) => {
@@ -29,6 +30,9 @@ export default class MapContainer extends Component<{}> {
     this.setState({
       intData:data.data
     }, ()=> console.log("International Data:" + JSON.stringify(this.state.intData)))
+    this.setState({
+      worldStats: data.data.reduce((a,b)=>({confirmed: (a.confirmed + b.confirmed), deaths: (a.deaths + b.deaths), recovered: (a.recovered + b.recovered)}))
+    })
   }
   tryYesterday = (date) => {
     date.setDate(date.getDate() - 1);
@@ -91,7 +95,13 @@ export default class MapContainer extends Component<{}> {
               if(locationData.cases === 0)
                return null;
               return(
-              <Circle key={location.state} center={[location.latitude, location.longitude]} fillColor="blue" radius={15000 + (locationData.cases*2000)}>
+              <Circle key={location.state}
+                center={[location.latitude, location.longitude]}
+                fillColor="red"
+                radius={15000 + (locationData.cases*2500)}
+                onMouseOver={(e) => {
+                  e.target.openPopup();
+                }}>
                 <Popup>
                 <h3>{location.state}</h3><br/>
                 Cases: {locationData.cases},<br/>
@@ -103,13 +113,21 @@ export default class MapContainer extends Component<{}> {
           }
           {
             Array.isArray(this.state.intData) && this.state.intData.map(location => {
-              if(location.country_region === "India"){
-               if(this.state.countryStats === null)
-                this.setState({countryStats: location})
-               return null;
-              }
+                if(location.country_region === "India"){
+                 if(this.state.countryStats === null)
+                  this.setState({countryStats: location})
+                 return null;
+                }
               return(
-              <Circle key={location.province_state ? (location.province_state + "." +  location.country_region) : location.country_region} center={[location.latitude, location.longitude]} fillColor="blue" radius={15000 + (location.confirmed*20)}>
+              <Circle
+                key={location.province_state ? (location.province_state + "." +  location.country_region) : location.country_region}
+                center={[location.latitude, location.longitude]}
+                fillColor="red"
+                radius={15000 + (location.confirmed*20)}
+                onMouseOver={(e) => {
+                  e.target.openPopup();
+                }}>
+
                 <Popup>
                 <h3>{location.province_state ? location.province_state : location.country_region}</h3>
                 {location.province_state && <span>{location.country_region}<br/></span>}
@@ -124,6 +142,7 @@ export default class MapContainer extends Component<{}> {
         {this.state.indiaData &&
         <div className="information-head" >
           {this.state.countryStats &&<h3> Confirmed Cases: {this.state.countryStats.confirmed > this.state.indiaData.countryData.total ? this.state.countryStats.confirmed : this.state.indiaData.countryData.total } <br/> </h3>}
+          {this.state.worldStats &&<h3> Confirmed Cases Worldwide: { this.state.worldStats.confirmed.toLocaleString('en-IN') } <br/> </h3>}
           <h4>
           Total Cases(MoHFS): {this.state.indiaData.countryData.total} <br/>
           Local Patients: {this.state.indiaData.countryData.localTotal} <br/>
