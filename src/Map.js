@@ -7,12 +7,8 @@ import {
 } from 'react-leaflet';
 import { readRemoteFile } from 'react-papaparse'
 import geoLocation from './geoLocation.js';
-import logo from './logo.svg';
-import './App.css';
 
 const center = [22.9734, 78.6569]
-const handleForce = (data, fileName) => console.log(data, fileName);
-
 const papaparseOptions = {
   header: true,
   dynamicTyping: true,
