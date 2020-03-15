@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import {
   Circle,
   Map,
+  Marker,
   Popup,
   TileLayer,
 } from 'react-leaflet';
 import { readRemoteFile } from 'react-papaparse'
-import geoLocation from './geoLocation.js';
+import geoLocation from '../data/geoLocation.js';
+import testCenters from '../data/testCenters.js';
 
 const center = [22.9734, 78.6569]
 const papaparseOptions = {
@@ -20,6 +22,8 @@ export default function MapContainer() {
   const[internationalData, setInternationalData] = useState(null);
   const[countryStats, setCountryStats] = useState(null);
   const[worldStats, setWorldStats] = useState(null);
+  const[viewTestCenters, setViewTestCenters] = useState(false);
+
   const parseInternationalData = (data) => {
     console.log("Setting International Data");
     console.log("International Data:" + JSON.stringify(data.data))
@@ -32,7 +36,8 @@ export default function MapContainer() {
     console.log(formattedDate);
     readRemoteFile('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/'+ formattedDate + '.csv', {
       ...papaparseOptions,
-      complete: parseInternationalData
+      complete: parseInternationalData,
+      error: ()=>tryYesterday(date)
     })
   }
   useEffect(()=>{
@@ -115,9 +120,33 @@ export default function MapContainer() {
               </Circle>)
             })
           }
+          {
+            viewTestCenters&&testCenters.map(testCenter => {
+              return(
+              <Marker
+                key={testCenter.institution}
+                position={[testCenter.latitude, testCenter.longitude]}
+                onMouseOver={(e) => {
+                  e.target.openPopup();
+                }}>
+
+                <Popup>
+                <h3>{testCenter.institution}</h3>
+                <a href={"https://www.google.com/maps/place/?q=place_id:" + testCenter.place_id} target="_blank" rel="noopener noreferrer">Open in Maps</a>
+                </Popup>
+              </Marker>)
+            })
+          }
         </Map>
         {indiaData &&
         <div className="information-head" >
+          <span class="switch-text">Test Centers</span>
+          <label class="switch">
+            <input type="checkbox" value={viewTestCenters} onChange={(e)=>setViewTestCenters(e.target.value)} />
+            <span class="slider round"></span>
+          </label>
+          <span class="switch-text"></span>
+
           {countryStats &&<h3> Confirmed Cases: {countryStats.confirmed > indiaData.countryData.total ? countryStats.confirmed : indiaData.countryData.total } <br/> </h3>}
           {worldStats &&<h3> Confirmed Cases Worldwide: { worldStats.confirmed.toLocaleString('en-IN') } <br/> </h3>}
           <h4>
