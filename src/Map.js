@@ -131,9 +131,9 @@ export default class MapContainer extends Component<{}> {
           Total Cured/Discharged: {this.state.indiaData.countryData.cured_dischargedTotal} <br/>
           Total Deaths: {this.state.indiaData.countryData.deathsTotal}
           </h4>
-          <img src="./coronaSafeLogo.svg" alt="CoronaSafe Logo"/>
+          <a href="https://coronasafe.in/" target="_blank"><img src="./coronaSafeLogo.svg" alt="CoronaSafe Logo"/></a>
           Updated Live with data from <br/>
-          <a href="https://www.mohfw.gov.in/">Ministry of Health and Family Welfare</a>, India
+          <a href="https://www.mohfw.gov.in/" target="_blank">Ministry of Health and Family Welfare</a>, India
         </div>}
       </div>
     )
