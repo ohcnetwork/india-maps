@@ -4,13 +4,14 @@ import {
   Map,
   Marker,
   Popup,
+  Tooltip,
   TileLayer,
 } from 'react-leaflet';
 import { readRemoteFile } from 'react-papaparse'
 import geoLocation from '../data/geoLocation.js';
 import testCenters from '../data/testCenters.js';
 
-const center = [22.9734, 78.6569]
+const center = [15.398610, 77.563477]
 const papaparseOptions = {
   header: true,
   dynamicTyping: true,
@@ -22,7 +23,9 @@ export default function MapContainer() {
   const[internationalData, setInternationalData] = useState(null);
   const[countryStats, setCountryStats] = useState(null);
   const[worldStats, setWorldStats] = useState(null);
+
   const[viewTestCenters, setViewTestCenters] = useState(false);
+  const[firstLoad, setFirstLoad] = useState(true);
 
   const parseInternationalData = (data) => {
     console.log("Setting International Data");
@@ -65,7 +68,7 @@ export default function MapContainer() {
 
     return (
       <div>
-        <Map center={center} zoom={6}>
+        <Map center={center} zoom={5}>
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -82,14 +85,25 @@ export default function MapContainer() {
                 fillColor="red"
                 radius={15000 + (locationData.cases*2500)}
                 onMouseOver={(e) => {
+                  firstLoad && setFirstLoad(false)
                   e.target.openPopup();
                 }}>
-                <Popup>
-                <h3>{location.state}</h3><br/>
-                Cases: {locationData.cases},<br/>
-                Cured/Discharged: {locationData.cured_discharged},<br/>
-                Deaths: {locationData.deaths},<br/>
-                Helpline: {locationData.helpline}</Popup>
+
+                { location.state === "Kerala" && firstLoad ?
+                    <Tooltip permanent>
+                    <h3>{location.state}</h3><br/>
+                    Cases: {locationData.cases},<br/>
+                    Cured/Discharged: {locationData.cured_discharged},<br/>
+                    Deaths: {locationData.deaths},<br/>
+                    Helpline: {locationData.helpline}</Tooltip>
+                  :
+                    <Popup>
+                    <h3>{location.state}</h3><br/>
+                    Cases: {locationData.cases},<br/>
+                    Cured/Discharged: {locationData.cured_discharged},<br/>
+                    Deaths: {locationData.deaths},<br/>
+                    Helpline: {locationData.helpline}</Popup>
+                }
               </Circle>)
             })
           }
