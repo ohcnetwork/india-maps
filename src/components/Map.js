@@ -28,15 +28,15 @@ export default function MapContainer() {
   const[firstLoad, setFirstLoad] = useState(true);
 
   const parseInternationalData = (data) => {
-    console.log("Setting International Data");
-    console.log("International Data:" + JSON.stringify(data.data))
+    // console.log("Setting International Data");
+    // console.log("International Data:" + JSON.stringify(data.data))
     setInternationalData(data.data)
     setWorldStats(data.data.reduce((a,b)=>({confirmed: (a.confirmed + b.confirmed), deaths: (a.deaths + b.deaths), recovered: (a.recovered + b.recovered)})))
   }
   const tryYesterday = (date) => {
     date.setDate(date.getDate() - 1);
     const formattedDate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear())
-    console.log(formattedDate);
+    // console.log(formattedDate);
     readRemoteFile('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/'+ formattedDate + '.csv', {
       ...papaparseOptions,
       complete: parseInternationalData,
@@ -58,7 +58,7 @@ export default function MapContainer() {
       )
     const date = new Date();
     const formattedDate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear())
-    console.log(formattedDate);
+    // console.log(formattedDate);
     readRemoteFile('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/'+ formattedDate + '.csv', {
       ...papaparseOptions,
       complete: parseInternationalData,
@@ -76,7 +76,7 @@ export default function MapContainer() {
           />
           {
             indiaData && geoLocation.map(location => {
-              console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
+              // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
               const locationData = indiaData.stateData[location.state];
               if(locationData.cases === 0)
                return null;
@@ -147,7 +147,7 @@ export default function MapContainer() {
 
                 <Popup>
                 <h3>{testCenter.institution}</h3>
-                <a href={"https://www.google.com/maps/place/?q=place_id:" + testCenter.place_id} target="_blank" rel="noopener noreferrer">Open in Maps</a>
+                <a href={"https://www.google.com/maps/search/?api=1&query="+ testCenter.institution +"&query_place_id=" + testCenter.place_id} target="_blank" rel="noopener noreferrer">Open in Maps</a>
                 </Popup>
               </Marker>)
             })
