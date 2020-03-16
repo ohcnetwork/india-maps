@@ -65,6 +65,7 @@ export default function MapContainer() {
       error: ()=>tryYesterday(date)
     })
   },[])
+    console.log(viewTestCenters);
 
     return (
       <div>
@@ -135,7 +136,7 @@ export default function MapContainer() {
             })
           }
           {
-            viewTestCenters&&testCenters.map(testCenter => {
+            viewTestCenters && testCenters.map(testCenter => {
               return(
               <Marker
                 key={testCenter.institution}
@@ -154,12 +155,12 @@ export default function MapContainer() {
         </Map>
         {indiaData &&
         <div className="information-head" >
-          <span class="switch-text">Test Centers</span>
-          <label class="switch">
-            <input type="checkbox" value={viewTestCenters} onChange={(e)=>setViewTestCenters(e.target.value)} />
-            <span class="slider round"></span>
+          <span className="switch-text">Test Centers</span>
+          <label className="switch">
+            <input type="checkbox" value={viewTestCenters} onChange={(e)=>setViewTestCenters(!viewTestCenters)} />
+            <span className="slider round"></span>
           </label>
-          <span class="switch-text"></span>
+          <span className="switch-text"></span>
 
           {countryStats &&<h3> Confirmed Cases: {countryStats.confirmed > indiaData.countryData.total ? countryStats.confirmed : indiaData.countryData.total } <br/> </h3>}
           {worldStats &&<h3> Confirmed Cases Worldwide: { worldStats.confirmed.toLocaleString('en-IN') } <br/> </h3>}
