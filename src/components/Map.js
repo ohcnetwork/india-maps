@@ -9,9 +9,11 @@ import {
 } from 'react-leaflet';
 import { readRemoteFile } from 'react-papaparse'
 import geoLocation from '../data/geoLocation.js';
+import temp from '../data/temp.js';
+import districtGeoLocation from '../data/districtGeoLocation.js';
 import testCenters from '../data/testCenters.js';
 
-const center = [15.398610, 77.563477]
+const center = [9.5915668, 76.5221531]
 const papaparseOptions = {
   header: true,
   dynamicTyping: true,
@@ -20,6 +22,7 @@ const papaparseOptions = {
 };
 export default function MapContainer() {
   const[indiaData, setIndiaData] = useState(null);
+  const[districtData, setDistrictData] = useState(null);
   const[internationalData, setInternationalData] = useState(null);
   const[countryStats, setCountryStats] = useState(null);
   const[worldStats, setWorldStats] = useState(null);
@@ -56,6 +59,17 @@ export default function MapContainer() {
           // console.log("Error Response")
         }
       )
+    fetch("http://volunteer.coronasafe.network/api/reports")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          console.log("Received Response" + result)
+          setDistrictData(result)
+        },
+        (error) => {
+          console.log("Error Response")
+        }
+      )
     const date = new Date();
     const formattedDate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear())
     // console.log(formattedDate);
@@ -69,7 +83,7 @@ export default function MapContainer() {
 
     return (
       <div>
-        <Map center={center} zoom={5}>
+        <Map center={center} zoom={7}>
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -78,7 +92,7 @@ export default function MapContainer() {
             indiaData && geoLocation.map(location => {
               // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
               const locationData = indiaData.stateData[location.state];
-              if(locationData.cases === 0)
+              if(locationData.cases === 0 || location.state === "Kerala")
                return null;
               return(
               <Circle key={location.state}
@@ -89,21 +103,47 @@ export default function MapContainer() {
                   firstLoad && setFirstLoad(false)
                   e.target.openPopup();
                 }}>
-
-                { location.state === "Kerala" && firstLoad ?
-                    <Tooltip permanent>
-                    <h3>{location.state}</h3><br/>
-                    Cases: {locationData.cases},<br/>
-                    Cured/Discharged: {locationData.cured_discharged},<br/>
-                    Deaths: {locationData.deaths},<br/>
-                    Helpline: {locationData.helpline}</Tooltip>
-                  :
                     <Popup>
                     <h3>{location.state}</h3><br/>
                     Cases: {locationData.cases},<br/>
                     Cured/Discharged: {locationData.cured_discharged},<br/>
                     Deaths: {locationData.deaths},<br/>
                     Helpline: {locationData.helpline}</Popup>
+              </Circle>)
+            })
+          }
+          {
+            indiaData && districtGeoLocation.map(location => {
+              // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
+              const locationData = temp.kerala[location.district];
+              if(locationData.corona_positive === 0)
+               return null;
+              return(
+              <Circle key={location.district}
+                center={[location.latitude, location.longitude]}
+                fillColor="red"
+                radius={15000 + (locationData.corona_positive*2500)}
+                onMouseOver={(e) => {
+                  firstLoad && setFirstLoad(false)
+                  e.target.openPopup();
+                }}>
+
+                { location.state !== "Kerala" &&
+                  // firstLoad ?
+                    // <Tooltip permanent>
+                    // <h3>{location.state}</h3><br/>
+                    // Cases: {locationData.cases},<br/>
+                    // Cured/Discharged: {locationData.cured_discharged},<br/>
+                    // Deaths: {locationData.deaths},<br/>
+                    // Helpline: {locationData.helpline}</Tooltip>
+                  // :
+                  <Popup>
+                  <h3>{location.district}</h3><br/>
+                  Under Observation: {locationData.under_observation},<br/>
+                  Under Home Isolation: {locationData.under_home_isolation},<br/>
+                  Cases: {locationData.corona_positive},<br/>
+                  Cured/Discharged: {locationData.cured_discharged},<br/>
+                  Deaths: {locationData.deaths}</Popup>
                 }
               </Circle>)
             })
