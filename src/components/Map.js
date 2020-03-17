@@ -113,9 +113,9 @@ export default function MapContainer() {
             })
           }
           {
-            indiaData && districtGeoLocation.map(location => {
+            districtData && districtGeoLocation.map(location => {
               // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
-              const locationData = temp.kerala[location.district];
+              const locationData = districtData.kerala[location.district];
               if(locationData.corona_positive === 0)
                return null;
               return(
@@ -138,12 +138,14 @@ export default function MapContainer() {
                     // Helpline: {locationData.helpline}</Tooltip>
                   // :
                   <Popup>
-                  <h3>{location.district}</h3><br/>
+                  <h3 style={{margin:"0px"}}>{location.district}</h3>
+                  Kerala<br/>
+                  <p>
                   Under Observation: {locationData.under_observation},<br/>
                   Under Home Isolation: {locationData.under_home_isolation},<br/>
                   Cases: {locationData.corona_positive},<br/>
                   Cured/Discharged: {locationData.cured_discharged},<br/>
-                  Deaths: {locationData.deaths}</Popup>
+                  Deaths: {locationData.deaths}</p></Popup>
                 }
               </Circle>)
             })
