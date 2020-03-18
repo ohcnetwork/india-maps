@@ -4,12 +4,11 @@ import {
   Map,
   Marker,
   Popup,
-  Tooltip,
+  // Tooltip,
   TileLayer,
 } from 'react-leaflet';
 import { readRemoteFile } from 'react-papaparse'
 import geoLocation from '../data/geoLocation.js';
-import temp from '../data/temp.js';
 import districtGeoLocation from '../data/districtGeoLocation.js';
 import testCenters from '../data/testCenters.js';
 
@@ -36,16 +35,7 @@ export default function MapContainer() {
     setInternationalData(data.data)
     setWorldStats(data.data.reduce((a,b)=>({confirmed: (a.confirmed + b.confirmed), deaths: (a.deaths + b.deaths), recovered: (a.recovered + b.recovered)})))
   }
-  const tryYesterday = (date) => {
-    date.setDate(date.getDate() - 1);
-    const formattedDate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear())
-    // console.log(formattedDate);
-    readRemoteFile('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/'+ formattedDate + '.csv', {
-      ...papaparseOptions,
-      complete: parseInternationalData,
-      error: ()=>tryYesterday(date)
-    })
-  }
+
   useEffect(()=>{
     // console.log("Fetching Data")
     fetch("https://exec.clay.run/kunksed/mohfw-covid")
@@ -59,7 +49,7 @@ export default function MapContainer() {
           // console.log("Error Response")
         }
       )
-    fetch("http://volunteer.coronasafe.network/api/reports")
+    fetch("https://volunteer.coronasafe.network/api/reports")
       .then(res => res.json())
       .then(
         (result) => {
@@ -70,6 +60,17 @@ export default function MapContainer() {
           console.log("Error Response")
         }
       )
+
+    const tryYesterday = (date) => {
+      date.setDate(date.getDate() - 1);
+      const formattedDate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear())
+      // console.log(formattedDate);
+      readRemoteFile('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/'+ formattedDate + '.csv', {
+        ...papaparseOptions,
+        complete: parseInternationalData,
+        error: ()=>tryYesterday(date)
+      })
+    }
     const date = new Date();
     const formattedDate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear())
     // console.log(formattedDate);
