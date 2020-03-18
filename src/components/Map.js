@@ -133,7 +133,7 @@ export default function MapContainer() {
             stateData && geoLocation.map(location => {
               // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
               const locationData = stateData[location.state];
-              if(locationData === undefined || locationData.confirmedCasesIndian === 0 && locationData.confirmedCasesForeign || location.state === "Kerala")
+              if(locationData === undefined || (locationData.confirmedCasesIndian === 0 && locationData.confirmedCasesForeign === 0) || location.state === "Kerala")
                return null;
               return(
               <Circle key={location.state}
