@@ -20,7 +20,9 @@ const papaparseOptions = {
   transformHeader: header => header.toLowerCase().replace(/\W/g, "_")
 };
 export default function MapContainer() {
-  const[indiaData, setIndiaData] = useState(null);
+  // const[indiaData, setIndiaData] = useState(null);
+  const[stateData, setStateData] = useState(null);
+  const[countrySummary, setCountrySummary] = useState(null);
   const[districtData, setDistrictData] = useState(null);
   const[internationalData, setInternationalData] = useState(null);
   const[countryStats, setCountryStats] = useState(null);
@@ -38,17 +40,17 @@ export default function MapContainer() {
 
   useEffect(()=>{
     // console.log("Fetching Data")
-    fetch("https://exec.clay.run/kunksed/mohfw-covid")
-      .then(res => res.json())
-      .then(
-        (result) => {
-          // console.log("Received Response")
-          setIndiaData(result)
-        },
-        (error) => {
-          // console.log("Error Response")
-        }
-      )
+    // fetch("https://exec.clay.run/kunksed/mohfw-covid")
+    //   .then(res => res.json())
+    //   .then(
+    //     (result) => {
+    //       // console.log("Received Response")
+    //       setIndiaData(result)
+    //     },
+    //     (error) => {
+    //       // console.log("Error Response")
+    //     }
+    //   )
     fetch("https://volunteer.coronasafe.network/api/reports")
       .then(res => res.json())
       .then(
@@ -60,6 +62,20 @@ export default function MapContainer() {
           console.log("Error Response")
         }
       )
+
+    fetch("https://api.rootnet.in/covid19-in/stats/latest")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          console.log("Received Response" + result)
+          setStateData(Object.assign({}, ...result.data.regional.map(({loc, confirmedCasesIndian, confirmedCasesForeign, deaths, discharged}) => ({[loc]: {confirmedCasesIndian, confirmedCasesForeign, deaths, discharged}}))))
+          setCountrySummary(result.data.summary)
+        },
+        (error) => {
+          console.log("Error Response")
+        }
+      )
+
 
     const tryYesterday = (date) => {
       date.setDate(date.getDate() - 1);
@@ -89,7 +105,7 @@ export default function MapContainer() {
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          {
+        {/*
             indiaData && geoLocation.map(location => {
               // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
               const locationData = indiaData.stateData[location.state];
@@ -110,6 +126,29 @@ export default function MapContainer() {
                     Cured/Discharged: {locationData.cured_discharged},<br/>
                     Deaths: {locationData.deaths},<br/>
                     Helpline: {locationData.helpline}</Popup>
+              </Circle>)
+            })
+          */}
+          {
+            stateData && geoLocation.map(location => {
+              // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
+              const locationData = stateData[location.state];
+              if(locationData === undefined || locationData.confirmedCasesIndian === 0 && locationData.confirmedCasesForeign || location.state === "Kerala")
+               return null;
+              return(
+              <Circle key={location.state}
+                center={[location.latitude, location.longitude]}
+                fillColor="red"
+                radius={15000 + ((locationData.confirmedCasesIndian + locationData.confirmedCasesForeign)*2500)}
+                onMouseOver={(e) => {
+                  firstLoad && setFirstLoad(false)
+                  e.target.openPopup();
+                }}>
+                    <Popup>
+                    <h3>{location.state}</h3><br/>
+                    Cases: {locationData.confirmedCasesIndian + locationData.confirmedCasesForeign},<br/>
+                    Cured/Discharged: {locationData.discharged},<br/>
+                    Deaths: {locationData.deaths}</Popup>
               </Circle>)
             })
           }
@@ -196,7 +235,7 @@ export default function MapContainer() {
             })
           }
         </Map>
-        {indiaData &&
+        {countrySummary &&
         <div className="information-head" >
           <span className="switch-text">Test Centers</span>
           <label className="switch">
@@ -205,14 +244,18 @@ export default function MapContainer() {
           </label>
           <span className="switch-text"></span>
 
-          {countryStats &&<h3> Confirmed Cases: {countryStats.confirmed > indiaData.countryData.total ? countryStats.confirmed : indiaData.countryData.total } <br/> </h3>}
+          {countryStats &&<h3> Confirmed Cases: {countryStats.confirmed > countrySummary.total ? countryStats.confirmed : countrySummary.total } <br/> </h3>}
           {worldStats &&<h3> Confirmed Cases Worldwide: { worldStats.confirmed.toLocaleString('en-IN') } <br/> </h3>}
           <h4>
-          Total Cases(MoHFS): {indiaData.countryData.total} <br/>
+            Local Patients: {countrySummary.confirmedCasesIndian} <br/>
+            International Patients: {countrySummary.confirmedCasesForeign} <br/>
+            Total Cured/Discharged: {countrySummary.discharged} <br/>
+            Total Deaths: {countrySummary.deaths}
+          {/*Total Cases(MoHFS): {indiaData.countryData.total} <br/>
           Local Patients: {indiaData.countryData.localTotal} <br/>
           International Patients: {indiaData.countryData.intTotal} <br/>
           Total Cured/Discharged: {indiaData.countryData.cured_dischargedTotal} <br/>
-          Total Deaths: {indiaData.countryData.deathsTotal}
+          Total Deaths: {indiaData.countryData.deathsTotal}*/}
           </h4>
           <a href="https://coronasafe.in/" target="_blank" rel="noopener noreferrer" ><img src="./coronaSafeLogo.svg" alt="CoronaSafe Logo"/></a>
           Updated Live with data from <br/>
