@@ -276,7 +276,8 @@ export default function MapContainer() {
             </React.Fragment>}
           <a href="https://coronasafe.in/" target="_blank" rel="noopener noreferrer" ><img src="./coronaSafeLogo.svg" alt="CoronaSafe Logo"/></a>
           Updated Live with data from <br/>
-          <a href="https://www.mohfw.gov.in/" target="_blank" rel="noopener noreferrer" >Ministry of Health and Family Welfare</a>, India
+          <a href="https://www.mohfw.gov.in/" target="_blank" rel="noopener noreferrer" >Ministry of Health and Family Welfare</a>, India<br/>
+          Mapped using <a href="https://openstreetmap.org/" target="_blank" rel="noopener noreferrer" >OpenStreetMap.org</a>
         </div>}
         {!showInfoHead &&
         <div className="information-head">
