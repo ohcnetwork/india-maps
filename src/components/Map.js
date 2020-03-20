@@ -20,15 +20,19 @@ const papaparseOptions = {
   transformHeader: header => header.toLowerCase().replace(/\W/g, "_")
 };
 export default function MapContainer() {
-  // const[indiaData, setIndiaData] = useState(null);
+  const[indiaData, setIndiaData] = useState(null);
+
   const[stateData, setStateData] = useState(null);
   const[countrySummary, setCountrySummary] = useState(null);
+
   const[districtData, setDistrictData] = useState(null);
+
   const[internationalData, setInternationalData] = useState(null);
   const[countryStats, setCountryStats] = useState(null);
   const[worldStats, setWorldStats] = useState(null);
 
   const[viewTestCenters, setViewTestCenters] = useState(false);
+  const[showInfoHead, setShowInfoHead] = useState(true);
   const[firstLoad, setFirstLoad] = useState(true);
 
   const parseInternationalData = (data) => {
@@ -37,20 +41,25 @@ export default function MapContainer() {
     setInternationalData(data.data)
     setWorldStats(data.data.reduce((a,b)=>({confirmed: (a.confirmed + b.confirmed), deaths: (a.deaths + b.deaths), recovered: (a.recovered + b.recovered)})))
   }
-
   useEffect(()=>{
-    // console.log("Fetching Data")
-    // fetch("https://exec.clay.run/kunksed/mohfw-covid")
-    //   .then(res => res.json())
-    //   .then(
-    //     (result) => {
-    //       // console.log("Received Response")
-    //       setIndiaData(result)
-    //     },
-    //     (error) => {
-    //       // console.log("Error Response")
-    //     }
-    //   )
+    if(countrySummary)
+      if(indiaData.countryData)
+        if((countrySummary.confirmedCasesIndian + countrySummary.confirmedCasesForeign) > indiaData.countryData.total)
+          setIndiaData(null);
+  },[stateData,indiaData])
+  useEffect(()=>{
+    console.log("Fetching Data")
+    fetch("https://exec.clay.run/kunksed/mohfw-covid")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          // console.log("Received Response")
+          setIndiaData(result)
+        },
+        (error) => {
+          // console.log("Error Response")
+        }
+      )
     fetch("https://volunteer.coronasafe.network/api/reports")
       .then(res => res.json())
       .then(
@@ -105,9 +114,9 @@ export default function MapContainer() {
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-        {/*
-            indiaData && geoLocation.map(location => {
-              // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
+        {
+            indiaData && indiaData.stateData ? geoLocation.map(location => {
+              console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
               const locationData = indiaData.stateData[location.state];
               if(locationData.cases === 0 || location.state === "Kerala")
                return null;
@@ -128,9 +137,8 @@ export default function MapContainer() {
                     Helpline: {locationData.helpline}</Popup>
               </Circle>)
             })
-          */}
-          {
-            stateData && geoLocation.map(location => {
+
+            : stateData && geoLocation.map(location => {
               // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
               const locationData = stateData[location.state];
               if(locationData === undefined || (locationData.confirmedCasesIndian === 0 && locationData.confirmedCasesForeign === 0) || location.state === "Kerala")
@@ -156,7 +164,7 @@ export default function MapContainer() {
             districtData && districtGeoLocation.map(location => {
               // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
               const locationData = districtData.kerala[location.district];
-              if(locationData.corona_positive === 0)
+              if(locationData === undefined || locationData.corona_positive === 0)
                return null;
               return(
               <Circle key={location.district}
@@ -235,31 +243,44 @@ export default function MapContainer() {
             })
           }
         </Map>
-        {countrySummary &&
+        {showInfoHead && countrySummary &&
         <div className="information-head" >
-          <span className="switch-text">Test Centers</span>
+          <a href="#" className="button3" onClick={e=>{e.preventDefault(); setShowInfoHead(false)}}>Hide Info</a>
+          <div className="switch-text">Test Centers
           <label className="switch">
             <input type="checkbox" value={viewTestCenters} onChange={(e)=>setViewTestCenters(!viewTestCenters)} />
             <span className="slider round"></span>
           </label>
-          <span className="switch-text"></span>
-
-          {countryStats &&<h3> Confirmed Cases: {countryStats.confirmed > countrySummary.total ? countryStats.confirmed : countrySummary.total } <br/> </h3>}
-          {worldStats &&<h3> Confirmed Cases Worldwide: { worldStats.confirmed.toLocaleString('en-IN') } <br/> </h3>}
-          <h4>
-            Local Patients: {countrySummary.confirmedCasesIndian} <br/>
-            International Patients: {countrySummary.confirmedCasesForeign} <br/>
-            Total Cured/Discharged: {countrySummary.discharged} <br/>
-            Total Deaths: {countrySummary.deaths}
-          {/*Total Cases(MoHFS): {indiaData.countryData.total} <br/>
-          Local Patients: {indiaData.countryData.localTotal} <br/>
-          International Patients: {indiaData.countryData.intTotal} <br/>
-          Total Cured/Discharged: {indiaData.countryData.cured_dischargedTotal} <br/>
-          Total Deaths: {indiaData.countryData.deathsTotal}*/}
-          </h4>
+          </div>
+          {(indiaData && indiaData.stateData) ?
+            <React.Fragment>
+              {indiaData && <h3> Confirmed Cases: {countryStats.confirmed > indiaData.countryData.total ? countryStats.confirmed : indiaData.countryData.total } <br/> </h3>}
+              {worldStats && <h3> Confirmed Cases Worldwide: { worldStats.confirmed.toLocaleString('en-IN') } <br/> </h3>}
+              <h4>
+                Total Cases(MoHFS): {indiaData.countryData.total} <br/>
+                Local Patients: {indiaData.countryData.localTotal} <br/>
+                International Patients: {indiaData.countryData.intTotal} <br/>
+                Total Cured/Discharged: {indiaData.countryData.cured_dischargedTotal} <br/>
+                Total Deaths: {indiaData.countryData.deathsTotal}
+              </h4>
+            </React.Fragment>
+         :  <React.Fragment>
+              {countryStats &&<h3> Confirmed Cases: {countryStats.confirmed > countrySummary.total ? countryStats.confirmed : countrySummary.total } <br/> </h3>}
+              {worldStats &&<h3> Confirmed Cases Worldwide: { worldStats.confirmed.toLocaleString('en-IN') } <br/> </h3>}
+              <h4>
+                Local Patients: {countrySummary.confirmedCasesIndian} <br/>
+                International Patients: {countrySummary.confirmedCasesForeign} <br/>
+                Total Cured/Discharged: {countrySummary.discharged} <br/>
+                Total Deaths: {countrySummary.deaths}
+              </h4>
+            </React.Fragment>}
           <a href="https://coronasafe.in/" target="_blank" rel="noopener noreferrer" ><img src="./coronaSafeLogo.svg" alt="CoronaSafe Logo"/></a>
           Updated Live with data from <br/>
           <a href="https://www.mohfw.gov.in/" target="_blank" rel="noopener noreferrer" >Ministry of Health and Family Welfare</a>, India
+        </div>}
+        {!showInfoHead &&
+        <div className="information-head">
+          <a href="#" className="button3" onClick={e=>{e.preventDefault(); setShowInfoHead(true)}}>Show Info</a>
         </div>}
       </div>
     )

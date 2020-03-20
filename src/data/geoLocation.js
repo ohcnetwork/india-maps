@@ -75,7 +75,7 @@ const geoLocation = [
    "longitude": 79.74
  },
  {
-   "state": "Chhattisgarh",
+   "state": "Chattisgarh",
    "latitude": 21.2787,
    "longitude": 81.8661
  },
