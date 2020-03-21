@@ -19,11 +19,7 @@ code {
   height: 100%;
   width: 100%;
 }
-@media screen and (max-width: 767px) {
-  .leaflet-container {
-    height: 70vh;
-  }
-}
+
 .information-head {
   position: absolute;
   background: white;

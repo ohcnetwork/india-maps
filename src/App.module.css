@@ -4,6 +4,20 @@
 }
 .app-container {
   display: flex;
+  height: 100vh;
+}
+.left-panel {
+  flex: 4;
+  display: flex;
+  flex-direction: column;
+}
+@media screen and (max-width: 767px) {
+  .left-panel {
+    height: 50%;
+  }
+}
+.tracker-list-container {
+  display: flex;
   height: calc(100vh - 130px);
 }
 .list-wrapper {

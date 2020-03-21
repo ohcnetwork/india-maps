@@ -12,8 +12,9 @@ const cx = classNames.bind(require("./App.module.css"));
 function App() {
   const [indiaData, setIndiaData] = React.useState([]);
   const [districtData, setDistrictData] = React.useState({});
-  const [selectedLocationData, setSelectedLocationData] = React.useState(
-    { summary: (indiaData || {}).summary || {} });
+  const [selectedLocationData, setSelectedLocationData] = React.useState({
+    summary: (indiaData || {}).summary || {}
+  });
   const [
     selectedLocationDataDispaly,
     setSelectedLocationDataDispaly
@@ -22,7 +23,7 @@ function App() {
   const [showTestCenters, setShowTestCenters] = React.useState(false);
   const handleStateWiseDataSuccess = indiaData => {
     setIndiaData(indiaData);
-    setSelectedLocationData({summary: indiaData.summary});
+    setSelectedLocationData({ summary: indiaData.summary });
   };
   const handleDistrictWiseDataSuccess = data => {
     setDistrictData(data);
@@ -33,7 +34,10 @@ function App() {
       dimensions.width <= mobileWindowSizeBreakPoint
     );
     setNewsSearchKeyword(stateData.loc);
-    setSelectedLocationData({summary:stateData, subLocations: districtData[stateData.loc.toLowerCase()]});
+    setSelectedLocationData({
+      summary: stateData,
+      subLocations: districtData[stateData.loc.toLowerCase()]
+    });
   };
   const [dimensions, setDimensions] = React.useState({
     height: window.innerHeight,
@@ -62,57 +66,69 @@ function App() {
   return (
     <>
       <section className={cx("app-wrapper")}>
-        <AppHeader />
         <section className={cx("app-container")}>
-          <div className={cx("list-wrapper")}>
-            {/* <h1>COVID-19 India Tracker</h1> */}
-            <IndiaData
-              indiaData={indiaData}
-              onStateSelect={handleStateSelect}
-              onTesteCenterToggle={handleTesteCenterToggle}
+          <div className={cx("left-panel")}>
+            <AppHeader />
+            <div className={cx("tracker-list-container")}>
+              <div className={cx("list-wrapper")}>
+                {/* <h1>COVID-19 India Tracker</h1> */}
+                <IndiaData
+                  indiaData={indiaData}
+                  onStateSelect={handleStateSelect}
+                  onTesteCenterToggle={handleTesteCenterToggle}
+                  viewTestCenters={showTestCenters}
+                />
+              </div>
+              {dimensions.width > mobileWindowSizeBreakPoint && (
+                <div className={cx("new-wrapper")}>
+                  <SelectedLocationData
+                    locationData={{
+                      ...selectedLocationData,
+                      loc: newsSearchKeyword
+                    }}
+                  />
+                </div>
+              )}
+              {dimensions.width <= mobileWindowSizeBreakPoint && (
+                <Dialog
+                  onClose={handleClose}
+                  open={selectedLocationDataDispaly}
+                >
+                  <DialogTitle
+                    id="customized-dialog-title"
+                    onClose={handleClose}
+                  >
+                    {selectedLocationData.loc}
+                    <IconButton
+                      aria-label="close"
+                      onClick={handleClose}
+                      style={{ float: "right" }}
+                    >
+                      X
+                    </IconButton>
+                  </DialogTitle>
+                  <div className={cx("new-wrapper")}>
+                    <SelectedLocationData
+                      locationData={{
+                        ...selectedLocationData,
+                        loc: newsSearchKeyword
+                      }}
+                    />
+                  </div>
+                </Dialog>
+              )}
+            </div>
+            <AppFooter></AppFooter>
+          </div>
+
+          <div className={cx("map-wrapper")}>
+            <Map
+              onStateWiseDataGetSuccess={handleStateWiseDataSuccess}
+              onDistrictWiseDataGetSuccess={handleDistrictWiseDataSuccess}
               viewTestCenters={showTestCenters}
             />
           </div>
-          {dimensions.width > mobileWindowSizeBreakPoint && (
-            <div className={cx("new-wrapper")}>
-              <SelectedLocationData
-                locationData={{
-                  ...selectedLocationData,
-                  loc: newsSearchKeyword
-                }}
-              />
-            </div>
-          )}
-          {dimensions.width <= mobileWindowSizeBreakPoint && (
-            <Dialog onClose={handleClose} open={selectedLocationDataDispaly}>
-              <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-                {selectedLocationData.loc}
-                <IconButton
-                  aria-label="close"
-                  onClick={handleClose}
-                  style={{ float: "right" }}
-                >
-                  X
-                </IconButton>
-              </DialogTitle>
-              <div className={cx("new-wrapper")}>
-                <SelectedLocationData
-                  locationData={{
-                    ...selectedLocationData,
-                    loc: newsSearchKeyword
-                  }}
-                />
-              </div>
-            </Dialog>
-          )}
-
-          <div className={cx("map-wrapper")}>
-            <Map onStateWiseDataGetSuccess={handleStateWiseDataSuccess}
-              onDistrictWiseDataGetSuccess={handleDistrictWiseDataSuccess}
-              viewTestCenters={showTestCenters} />
-          </div>
         </section>
-        <AppFooter></AppFooter>
       </section>
     </>
   );

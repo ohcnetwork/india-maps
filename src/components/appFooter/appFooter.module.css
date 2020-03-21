@@ -1,6 +1,7 @@
 .footer-container {
-  min-height: 40px;
+  min-height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 5px 10px;
 }
