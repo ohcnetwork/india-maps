@@ -17,9 +17,7 @@ export default function StateWiseList(props) {
         result => {
           setNews(result.articles || []);
         },
-        error => {
-          console.log("<<<<<<<<<<Error Response>>>>>>>>>>");
-        }
+        error => {}
       );
   }, [locationData.loc]);
   return (

@@ -26,7 +26,6 @@ export default function StateWiseList(props) {
                 <div className={cx("title")}>{item.title}</div>
                 <div className={cx("provider")}>
                   <div className={cx("providerName")}>{item.source.name}</div>
-                  {/* <div className={cx("publishedTime")}> · 1h</div> */}
                 </div>
               </div>
             </a>

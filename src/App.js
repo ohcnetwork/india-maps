@@ -41,8 +41,7 @@ function App() {
       });
 
       window.addEventListener("resize", handleResize);
-
-      return _ => {
+      return () => {
         window.removeEventListener("resize", handleResize);
       };
     }
