@@ -6,6 +6,8 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import IconButton from "@material-ui/core/IconButton";
 import classNames from "classnames/bind";
+import AppHeader from "./components/appHeader/AppHeader";
+import AppFooter from "./components/appFooter/AppFooter";
 const cx = classNames.bind(require("./App.module.css"));
 function App() {
   const [indiaData, setIndiaData] = React.useState([]);
@@ -17,6 +19,7 @@ function App() {
     setSelectedLocationDataDispaly
   ] = React.useState(false);
   const [newsSearchKeyword, setNewsSearchKeyword] = React.useState("India");
+  const [showTestCenters, setShowTestCenters] = React.useState(false);
   const handleStateWiseDataSuccess = indiaData => {
     setIndiaData(indiaData);
     setSelectedLocationData(indiaData.summary);
@@ -49,15 +52,21 @@ function App() {
   const handleClose = () => {
     setSelectedLocationDataDispaly(false);
   };
+  const handleTesteCenterToggle = showTestCenters => {
+    setShowTestCenters(!!showTestCenters);
+  };
   return (
     <>
       <section className={cx("app-wrapper")}>
+        <AppHeader />
         <section className={cx("app-container")}>
           <div className={cx("list-wrapper")}>
-            <h1>COVID-19 India Tracker</h1>
+            {/* <h1>COVID-19 India Tracker</h1> */}
             <IndiaData
               indiaData={indiaData}
               onStateSelect={handleStateSelect}
+              onTesteCenterToggle={handleTesteCenterToggle}
+              viewTestCenters={showTestCenters}
             />
           </div>
           {dimensions.width > mobileWindowSizeBreakPoint && (
@@ -94,9 +103,13 @@ function App() {
           )}
 
           <div className={cx("map-wrapper")}>
-            <Map onStateWiseDataGetSuccess={handleStateWiseDataSuccess} />
+            <Map
+              onStateWiseDataGetSuccess={handleStateWiseDataSuccess}
+              viewTestCenters={showTestCenters}
+            />
           </div>
         </section>
+        <AppFooter></AppFooter>
       </section>
     </>
   );

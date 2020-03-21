@@ -11,10 +11,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-
+.map-container {
+  height: 100%;
+}
 .leaflet-container {
   z-index: 0;
-  height: 100vh;
+  height: 100%;
   width: 100%;
 }
 @media screen and (max-width: 767px) {
