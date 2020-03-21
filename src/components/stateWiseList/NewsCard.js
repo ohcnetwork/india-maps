@@ -1,11 +1,12 @@
 import React from "react";
 import classNames from "classnames/bind";
 const cx = classNames.bind(require("./newsCard.module.css"));
-export default function StateWiseList(props) {
+export default function NewsCard(props) {
   const { news } = props;
   return (
     <>
       <section>
+        <h3>News</h3>
         {news.map((item, i) => {
           return (
             <a

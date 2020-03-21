@@ -20,7 +20,7 @@ const papaparseOptions = {
   transformHeader: header => header.toLowerCase().replace(/\W/g, "_")
 };
 export default function MapContainer(props) {
-  const { onStateWiseDataGetSuccess, viewTestCenters } = props;
+  const { onStateWiseDataGetSuccess, onDistrictWiseDataGetSuccess, viewTestCenters } = props;
   const [indiaData, setIndiaData] = useState(null);
 
   const [stateData, setStateData] = useState(null);
@@ -76,6 +76,9 @@ export default function MapContainer(props) {
       .then(
         result => {
           console.log("Received Response" + result);
+          onDistrictWiseDataGetSuccess
+            ? onDistrictWiseDataGetSuccess(result)
+            : (() => {})();
           setDistrictData(result);
         },
         error => {
