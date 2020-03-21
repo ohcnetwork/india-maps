@@ -295,6 +295,27 @@ export default function MapContainer(props) {
               return null;
             }
             return (
+                  <h3 style={{margin:"0px"}}>{location.district}</h3>
+                  Kerala<br/>
+                  <p>
+                  Under Observation: {locationData.under_observation},<br/>
+                  Total Hospitalized: {locationData.total_hospitalised},<br/>
+                  Under Home Isolation: {locationData.under_home_isolation},<br/>
+                  Cases: {locationData.corona_positive},<br/>
+                  Cured/Discharged: {locationData.cured_discharged},<br/>
+                  Deaths: {locationData.deaths}</p></Popup>
+                }
+              </Circle>)
+            })
+          }
+          {
+            Array.isArray(internationalData) && internationalData.map(location => {
+                if(location.country_region === "India"){
+                 if(countryStats === null)
+                  setCountryStats(location)
+                 return null;
+                }
+              return(
               <Circle
                 key={
                   location.province_state
