@@ -20,7 +20,7 @@ export default function StateWiseList(props) {
                 height="76px"
                 width="76px"
                 src={item.urlToImage}
-                alt={item.url}
+                alt={""}
               ></img>
               <div className={cx("infoContainer")}>
                 <div className={cx("title")}>{item.title}</div>
