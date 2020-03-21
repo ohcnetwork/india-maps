@@ -190,6 +190,7 @@ export default function MapContainer() {
                   Kerala<br/>
                   <p>
                   Under Observation: {locationData.under_observation},<br/>
+                  Total Hospitalized: {locationData.total_hospitalised},<br/>
                   Under Home Isolation: {locationData.under_home_isolation},<br/>
                   Cases: {locationData.corona_positive},<br/>
                   Cured/Discharged: {locationData.cured_discharged},<br/>
