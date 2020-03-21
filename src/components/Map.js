@@ -21,17 +21,18 @@ const papaparseOptions = {
 };
 export default function MapContainer() {
   const[indiaData, setIndiaData] = useState(null);
-
   const[stateData, setStateData] = useState(null);
   const[countrySummary, setCountrySummary] = useState(null);
-
+  
   const[districtData, setDistrictData] = useState(null);
-
+  
   const[internationalData, setInternationalData] = useState(null);
   const[countryStats, setCountryStats] = useState(null);
   const[worldStats, setWorldStats] = useState(null);
-
+  
   const[viewTestCenters, setViewTestCenters] = useState(false);
+  const[currentInfoTab,setCurrentIntoTab]=useState("India")
+  const[InfoTabs,setInfoTabs]=useState(false)
   const[showInfoHead, setShowInfoHead] = useState(true);
   const[firstLoad, setFirstLoad] = useState(true);
 
@@ -43,17 +44,22 @@ export default function MapContainer() {
   }
   useEffect(()=>{
     if(countrySummary)
+    try{
       if(indiaData.countryData)
         if((countrySummary.confirmedCasesIndian + countrySummary.confirmedCasesForeign) > indiaData.countryData.total)
           setIndiaData(null);
-  },[stateData,indiaData])
+    }
+    catch(err){
+      
+    }
+  },[stateData, indiaData, countrySummary])
   useEffect(()=>{
     console.log("Fetching Data")
     fetch("https://exec.clay.run/kunksed/mohfw-covid")
       .then(res => res.json())
       .then(
         (result) => {
-          // console.log("Received Response")
+          console.log("Received Response mohfw",result)
           setIndiaData(result)
         },
         (error) => {
@@ -108,7 +114,8 @@ export default function MapContainer() {
     console.log(viewTestCenters);
 
     return (
-      <div>
+      <div className="container">
+        <div className="mapContainer">
         <Map center={center} zoom={7}>
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -243,16 +250,19 @@ export default function MapContainer() {
             })
           }
         </Map>
-        {showInfoHead && countrySummary &&
-        <div className="information-head" >
-          <a href="#" className="button3" onClick={e=>{e.preventDefault(); setShowInfoHead(false)}}>Hide Info</a>
-          <div className="switch-text">Test Centers
+        </div>
+        {countrySummary &&
+        <div className={showInfoHead?"info-head info-head-active":"information-head"}>
+          <div className="switch-text">
+          <div><a href="#" className="button3" onClick={e=>{e.preventDefault(); setShowInfoHead(false)}}>Hide Info</a></div>
+          <div>Test Centers</div>
           <label className="switch">
             <input type="checkbox" value={viewTestCenters} onChange={(e)=>setViewTestCenters(!viewTestCenters)} />
             <span className="slider round"></span>
           </label>
           </div>
-          {(indiaData && indiaData.stateData) ?
+          {
+          (indiaData && indiaData.stateData) ?
             <React.Fragment>
               {indiaData && <h3> Confirmed Cases: {countryStats.confirmed > indiaData.countryData.total ? countryStats.confirmed : indiaData.countryData.total } <br/> </h3>}
               {worldStats && <h3> Confirmed Cases Worldwide: { worldStats.confirmed.toLocaleString('en-IN') } <br/> </h3>}
@@ -267,20 +277,58 @@ export default function MapContainer() {
          :  <React.Fragment>
               {countryStats &&<h3> Confirmed Cases: {countryStats.confirmed > countrySummary.total ? countryStats.confirmed : countrySummary.total } <br/> </h3>}
               {worldStats &&<h3> Confirmed Cases Worldwide: { worldStats.confirmed.toLocaleString('en-IN') } <br/> </h3>}
-              <h4>
-                Local Patients: {countrySummary.confirmedCasesIndian} <br/>
-                International Patients: {countrySummary.confirmedCasesForeign} <br/>
-                Total Cured/Discharged: {countrySummary.discharged} <br/>
-                Total Deaths: {countrySummary.deaths}
-              </h4>
-            </React.Fragment>}
-          <a href="https://coronasafe.in/" target="_blank" rel="noopener noreferrer" ><img src="./coronaSafeLogo.svg" alt="CoronaSafe Logo"/></a>
-          Updated Live with data from <br/>
+              <div className="dropdown">
+                <div>
+                  <button className="drop-button"
+                  onClick={()=>{setInfoTabs(true)}}>{currentInfoTab}</button>
+                  <div className={InfoTabs?"dropdown-content dropdown-active":"dropdown-content"}>
+                      <ul>
+                       {["India"].concat(Object.keys(stateData)).map((el)=>{
+                         return  <li onClick={()=>{setCurrentIntoTab(el);setInfoTabs(false)}}
+                         >{el}</li>
+                       })}
+                      </ul>
+                  </div>
+                </div>
+               </div>
+               {/* {
+                 currentInfoTab==="India"?
+                 <div className="simpleGraph">
+                 <div style={{width:`${100*countrySummary.confirmedCasesForeign+countrySummary.confirmedCasesIndian/(countrySummary.confirmedCasesIndia+countrySummary.deaths+countrySummary.confirmedCasesForeign+countrySummary.discharged)})%`}}/>
+                 <div  style={{width:`${100*countrySummary.discharged/(countrySummary.confirmedCasesIndia+countrySummary.deaths+countrySummary.confirmedCasesForeign+countrySummary.discharged)})%`}}/>
+                 <div  style={{width:`${100*countrySummary.deaths/(countrySummary.confirmedCasesIndia+countrySummary.deaths+countrySummary.confirmedCasesForeign+countrySummary.discharged)})%`}}/>
+               </div>
+                 :
+                <div className="simpleGraph">
+                    <div style={{width:`${100*stateData[currentInfoTab].confirmedCasesForeign+stateData[currentInfoTab].confirmedCasesIndian/(stateData[currentInfoTab].confirmedCasesIndia+stateData[currentInfoTab].deaths+stateData[currentInfoTab].confirmedCasesForeign+stateData[currentInfoTab].discharged)})%`}}/>
+                    <div  style={{width:`${100*stateData[currentInfoTab].discharged/(stateData[currentInfoTab].confirmedCasesIndia+stateData[currentInfoTab].deaths+stateData[currentInfoTab].confirmedCasesForeign+stateData[currentInfoTab].discharged)})%`}}/>
+                    <div  style={{width:`${100*stateData[currentInfoTab].deaths/(stateData[currentInfoTab].confirmedCasesIndia+stateData[currentInfoTab].deaths+stateData[currentInfoTab].confirmedCasesForeign+stateData[currentInfoTab].discharged)})%`}}/>
+                </div>
+               } */}
+                {currentInfoTab==="India"?
+                 <h4>
+                 Local Patients: {countrySummary.confirmedCasesIndian} <br/>
+                 International Patients: {countrySummary.confirmedCasesForeign} <br/>
+                 Total Cured/Discharged: {countrySummary.discharged} <br/>
+                 Total Deaths: {countrySummary.deaths}
+               </h4>
+               :
+               <h4>
+               Local Patients: {stateData[currentInfoTab].confirmedCasesIndian} <br/>
+               International Patients: {stateData[currentInfoTab].confirmedCasesForeign} <br/>
+               Total Cured/Discharged: {stateData[currentInfoTab].discharged} <br/>
+               Total Deaths: {stateData[currentInfoTab].deaths}
+             </h4>
+               }
+            </React.Fragment>
+          }
+          <a href="https://coronasafe.in/" target="_blank" rel="noopener noreferrer" ><img src="./coronaSafeLogo.svg" alt="CoronaSafe Logo" className="coronoSafeImg"/></a>
+          <br/>Updated Live with data from <br/>
           <a href="https://www.mohfw.gov.in/" target="_blank" rel="noopener noreferrer" >Ministry of Health and Family Welfare</a>, India<br/>
           Mapped using <a href="https://openstreetmap.org/" target="_blank" rel="noopener noreferrer" >OpenStreetMap.org</a>
         </div>}
         {!showInfoHead &&
-        <div className="information-head">
+        <div className="information-show-button">
           <a href="#" className="button3" onClick={e=>{e.preventDefault(); setShowInfoHead(true)}}>Show Info</a>
         </div>}
       </div>

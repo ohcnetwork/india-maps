@@ -1,14 +1,15 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
@@ -18,36 +19,53 @@ code {
   width: 100%;
 }
 
-.information-head {
-  position:absolute;
-  background:white;
-  top:15px;
-  right:15px;
-  padding:20px;
-  max-width: 40vw;
-  zIndex:100;
+.info-head {
+  position: absolute;
+  background: white;
+  bottom: 0;
+  height: 0;
+  overflow-y: scroll;
+  z-index: 100;
+  width: 100%;
+  padding: 8px 16px 0 16px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0px -3px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 10px 10px 0px 0px;
+  box-sizing: border-box;
+  text-align: center;
+  opacity: 0;
+  transition: 0.5s;
 }
-@media screen and (min-width: 400px) {
+.info-head-active {
+  opacity: 1;
+  height: 40vh;
+}
+.information-show-button {
+  position: absolute;
+  bottom: 5px;
+}
+/* @media screen and (min-width: 400px) {
   .information-head {
-     font-size: .6em;
+    font-size: 0.6em;
   }
 }
 @media screen and (min-width: 800px) {
   .information-head {
-     font-size: .75em;
+    font-size: 0.75em;
   }
 }
 @media screen and (min-width: 1200px) {
   .information-head {
-     font-size: 1em;
+    font-size: 1em;
   }
-}
+} */
 
-.switch-text{
-  padding: 10px;
-  font-size: 1.5em;
+.switch-text {
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-
 
 /* Switch CSS begins here */
 
@@ -55,7 +73,7 @@ code {
   position: relative;
   display: inline-block;
   width: 60px;
-  height: 34px;
+  height: 30px;
 }
 
 /* Hide default HTML checkbox */
@@ -74,8 +92,78 @@ code {
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+.drop-button {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 20px;
+  padding: 10px 16px;
+  cursor: pointer;
+  user-select: none;
+  width: 100%;
+  color: #de3700;
+}
+.dropdown-content {
+  position: absolute;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  overflow: scroll;
+  background: white;
+  opacity: 0;
+  transition: 0.5s;
+}
+
+.dropdown-active {
+  height: 100%;
+  opacity: 1;
+}
+.dropdown-content ul {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  align-items: center;
+}
+
+.dropdown-content li {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 20px;
+  padding: 10px 16px;
+  cursor: pointer;
+  width: 100%;
+}
+.simpleGraph {
+  width: 100%;
+  height: 10px;
+  display: flex;
+}
+
+.simpleGraph div {
+  height: 10px;
+}
+
+.simpleGraph:nth-child(1) {
+  background-color: orange;
+}
+
+.simpleGraph:nth-child(2) {
+  background-color: red;
+}
+.simpleGraph:nth-child(3) {
+  background-color: grey;
 }
 
 .slider:before {
@@ -86,16 +174,16 @@ code {
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #2196f3;
 }
 
 input:checked + .slider:before {
@@ -115,31 +203,38 @@ input:checked + .slider:before {
 
 /* Switch CSS ends here */
 
-
 /* Button CSS starts */
 
-a.button3{
-display:inline-block;
-padding:0.3em 1.2em;
-margin:0 0.3em 0.3em 0;
-border-radius:2em;
-box-sizing: border-box;
-text-decoration:none;
-font-family:'Roboto',sans-serif;
-font-weight:300;
-color:#FFFFFF;
-background-color:#4eb5f1;
-text-align:center;
-transition: all 0.2s;
+a.button3 {
+  display: inline-block;
+  padding: 0.3em 1.2em;
+  margin: 0 0.3em 0.3em 0;
+  border-radius: 2em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: "Roboto", sans-serif;
+  font-weight: 300;
+  color: #ffffff;
+  background-color: #4eb5f1;
+  text-align: center;
+  transition: all 0.2s;
 }
-a.button3:hover{
-background-color:#4095c6;
+a.button3:hover {
+  background-color: #4095c6;
 }
-@media screen and (max-width:30em){
-  a.button3{
-    display:block;
-    margin:0.2em auto;
+@media screen and (max-width: 30em) {
+  a.button3 {
+      display: block;
+      margin: 0.2em auto;
   }
 }
 
 /* Button CSS ends */
+@media screen and (min-width: 720px) {
+  .info-head {
+    width: 50vw;
+  }
+  .coronoSafeImg {
+    width: 25vw;
+  }
+}
