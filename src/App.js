@@ -9,9 +9,9 @@ import classNames from "classnames/bind";
 const cx = classNames.bind(require("./App.module.css"));
 function App() {
   const [indiaData, setIndiaData] = React.useState([]);
+  const [districtData, setDistrictData] = React.useState({});
   const [selectedLocationData, setSelectedLocationData] = React.useState(
-    (indiaData || {}).summary || {}
-  );
+    { summary: (indiaData || {}).summary || {} });
   const [
     selectedLocationDataDispaly,
     setSelectedLocationDataDispaly
@@ -19,14 +19,18 @@ function App() {
   const [newsSearchKeyword, setNewsSearchKeyword] = React.useState("India");
   const handleStateWiseDataSuccess = indiaData => {
     setIndiaData(indiaData);
-    setSelectedLocationData(indiaData.summary);
+    setSelectedLocationData({summary: indiaData.summary});
   };
+  const handleDistrictWiseDataSuccess = data => {
+    setDistrictData(data);
+  };
+
   const handleStateSelect = stateData => {
     setSelectedLocationDataDispaly(
       dimensions.width <= mobileWindowSizeBreakPoint
     );
     setNewsSearchKeyword(stateData.loc);
-    setSelectedLocationData(stateData);
+    setSelectedLocationData({summary:stateData, subLocations: districtData[stateData.loc.toLowerCase()]});
   };
   const [dimensions, setDimensions] = React.useState({
     height: window.innerHeight,
@@ -94,7 +98,8 @@ function App() {
           )}
 
           <div className={cx("map-wrapper")}>
-            <Map onStateWiseDataGetSuccess={handleStateWiseDataSuccess} />
+            <Map onStateWiseDataGetSuccess={handleStateWiseDataSuccess}
+              onDistrictWiseDataGetSuccess={handleDistrictWiseDataSuccess} />
           </div>
         </section>
       </section>

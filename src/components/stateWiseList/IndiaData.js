@@ -7,7 +7,7 @@ import StatWiseList from "./StatWiseList";
 import DetailedTile from "./DetailedTile";
 import classNames from "classnames/bind";
 const cx = classNames.bind(require("./stateWiseList.module.css"));
-export default function StateWiseList(props) {
+export default function IndiaData(props) {
   const { indiaData, onStateSelect } = props;
   const isDataLoaded =
     indiaData && Object.keys(indiaData.summary || {}).length > 0;

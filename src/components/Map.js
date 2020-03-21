@@ -21,6 +21,7 @@ const papaparseOptions = {
 };
 export default function MapContainer(props) {
   const { onStateWiseDataGetSuccess } = props;
+  const { onDistrictWiseDataGetSuccess } = props;
   const [indiaData, setIndiaData] = useState(null);
 
   const [stateData, setStateData] = useState(null);
@@ -76,6 +77,9 @@ export default function MapContainer(props) {
       .then(
         result => {
           console.log("Received Response" + result);
+          onDistrictWiseDataGetSuccess
+            ? onDistrictWiseDataGetSuccess(result)
+            : (() => {})();
           setDistrictData(result);
         },
         error => {

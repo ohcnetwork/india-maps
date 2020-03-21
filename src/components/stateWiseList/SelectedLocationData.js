@@ -1,9 +1,10 @@
 import React from "react";
 import NewsCard from "./NewsCard";
 import DetailedTile from "./DetailedTile";
+import DistrictWiseList from "./DistrictWiseList";
 import classNames from "classnames/bind";
 const cx = classNames.bind(require("./stateWiseList.module.css"));
-export default function StateWiseList(props) {
+export default function SelectedLocationData(props) {
   const { locationData } = props;
   const isDataLoaded =
     locationData && Object.keys(locationData || {}).length > 0;
@@ -29,11 +30,14 @@ export default function StateWiseList(props) {
             <h1>{locationData.loc}</h1>
             <DetailedTile
               locationData={{
-                ...locationData,
+                ...locationData.summary,
                 total:
-                  locationData.confirmedCasesIndian +
-                  locationData.confirmedCasesForeign
+                  locationData.summary.confirmedCasesIndian +
+                  locationData.summary.confirmedCasesForeign
               }}
+            />
+          <DistrictWiseList
+              districtWiseData={locationData.subLocations}
             />
             <NewsCard news={news} />
           </section>
