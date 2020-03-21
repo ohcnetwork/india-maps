@@ -20,8 +20,7 @@ const papaparseOptions = {
   transformHeader: header => header.toLowerCase().replace(/\W/g, "_")
 };
 export default function MapContainer(props) {
-  const { onStateWiseDataGetSuccess } = props;
-  const { onDistrictWiseDataGetSuccess } = props;
+  const { onStateWiseDataGetSuccess, onDistrictWiseDataGetSuccess, viewTestCenters } = props;
   const [indiaData, setIndiaData] = useState(null);
 
   const [stateData, setStateData] = useState(null);
@@ -33,7 +32,7 @@ export default function MapContainer(props) {
   const [countryStats, setCountryStats] = useState(null);
   const [worldStats, setWorldStats] = useState(null);
 
-  const [viewTestCenters, setViewTestCenters] = useState(false);
+  // const [viewTestCenters, setViewTestCenters] = useState(false);
   const [showInfoHead, setShowInfoHead] = useState(true);
   const [firstLoad, setFirstLoad] = useState(true);
 
@@ -169,7 +168,7 @@ export default function MapContainer(props) {
   console.log(viewTestCenters);
 
   return (
-    <div>
+    <div className={"map-container"}>
       <Map center={center} zoom={7}>
         <TileLayer
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -365,128 +364,6 @@ export default function MapContainer(props) {
             );
           })}
       </Map>
-      {showInfoHead && countrySummary && (
-        <div className="information-head">
-          <a
-            href="#"
-            className="button3"
-            onClick={e => {
-              e.preventDefault();
-              setShowInfoHead(false);
-            }}
-          >
-            Hide Info
-          </a>
-          <div className="switch-text">
-            Test Centers
-            <label className="switch">
-              <input
-                type="checkbox"
-                value={viewTestCenters}
-                onChange={e => setViewTestCenters(!viewTestCenters)}
-              />
-              <span className="slider round"></span>
-            </label>
-          </div>
-          {indiaData && indiaData.stateData ? (
-            <React.Fragment>
-              {indiaData && (
-                <h3>
-                  {" "}
-                  Confirmed Cases:{" "}
-                  {countryStats.confirmed > indiaData.countryData.total
-                    ? countryStats.confirmed
-                    : indiaData.countryData.total}{" "}
-                  <br />{" "}
-                </h3>
-              )}
-              {worldStats && (
-                <h3>
-                  {" "}
-                  Confirmed Cases Worldwide:{" "}
-                  {worldStats.confirmed.toLocaleString("en-IN")} <br />{" "}
-                </h3>
-              )}
-              <h4>
-                Total Cases(MoHFS): {indiaData.countryData.total} <br />
-                Local Patients: {indiaData.countryData.localTotal} <br />
-                International Patients: {indiaData.countryData.intTotal} <br />
-                Total Cured/Discharged:{" "}
-                {indiaData.countryData.cured_dischargedTotal} <br />
-                Total Deaths: {indiaData.countryData.deathsTotal}
-              </h4>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              {countryStats && (
-                <h3>
-                  {" "}
-                  Confirmed Cases:{" "}
-                  {countryStats.confirmed > countrySummary.total
-                    ? countryStats.confirmed
-                    : countrySummary.total}{" "}
-                  <br />{" "}
-                </h3>
-              )}
-              {worldStats && (
-                <h3>
-                  {" "}
-                  Confirmed Cases Worldwide:{" "}
-                  {worldStats.confirmed.toLocaleString("en-IN")} <br />{" "}
-                </h3>
-              )}
-              <h4>
-                Local Patients: {countrySummary.confirmedCasesIndian} <br />
-                International Patients: {
-                  countrySummary.confirmedCasesForeign
-                }{" "}
-                <br />
-                Total Cured/Discharged: {countrySummary.discharged} <br />
-                Total Deaths: {countrySummary.deaths}
-              </h4>
-            </React.Fragment>
-          )}
-          <a
-            href="https://coronasafe.in/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src="./coronaSafeLogo.svg" alt="CoronaSafe Logo" />
-          </a>
-          Updated Live with data from <br />
-          <a
-            href="https://www.mohfw.gov.in/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Ministry of Health and Family Welfare
-          </a>
-          , India
-          <br />
-          Mapped using{" "}
-          <a
-            href="https://openstreetmap.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            OpenStreetMap.org
-          </a>
-        </div>
-      )}
-      {!showInfoHead && (
-        <div className="information-head">
-          <a
-            href="#"
-            className="button3"
-            onClick={e => {
-              e.preventDefault();
-              setShowInfoHead(true);
-            }}
-          >
-            Show Info
-          </a>
-        </div>
-      )}
     </div>
   );
 }

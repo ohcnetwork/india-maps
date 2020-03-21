@@ -1,17 +1,25 @@
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+}
 .app-container {
   display: flex;
+  height: calc(100vh - 130px);
 }
 .list-wrapper {
   flex: 2;
   padding: 0 10px 0 20px;
+  height: auto;
 }
 .new-wrapper {
   background-color: #efefef;
   flex: 2;
   padding: 0 10px 0 20px;
+  height: auto;
 }
 .map-wrapper {
   flex: 10;
+  height: auto;
 }
 @media screen and (max-width: 767px) {
   .app-container {
