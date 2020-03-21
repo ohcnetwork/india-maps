@@ -75,7 +75,7 @@ export default function MapContainer(props) {
       .then(res => res.json())
       .then(
         result => {
-          console.log("Received Response>>>>>>", result);
+          console.log("Received Response" + result);
           setDistrictData(result);
         },
         error => {
@@ -87,31 +87,31 @@ export default function MapContainer(props) {
       .then(res => res.json())
       .then(
         result => {
-          console.log(result, "result.data");
-          const stateWiseData = Object.assign(
-            {},
-            ...result.data.regional.map(
-              ({
-                loc,
-                confirmedCasesIndian,
-                confirmedCasesForeign,
-                deaths,
-                discharged
-              }) => ({
-                [loc]: {
+          console.log("Received Response" + result);
+          onStateWiseDataGetSuccess
+            ? onStateWiseDataGetSuccess(result.data)
+            : (() => {})();
+          setStateData(
+            Object.assign(
+              {},
+              ...result.data.regional.map(
+                ({
+                  loc,
                   confirmedCasesIndian,
                   confirmedCasesForeign,
                   deaths,
                   discharged
-                }
-              })
+                }) => ({
+                  [loc]: {
+                    confirmedCasesIndian,
+                    confirmedCasesForeign,
+                    deaths,
+                    discharged
+                  }
+                })
+              )
             )
           );
-          console.log(result.data, "India Data");
-          onStateWiseDataGetSuccess
-            ? onStateWiseDataGetSuccess(result.data)
-            : (() => {})();
-          setStateData(stateWiseData);
           setCountrySummary(result.data.summary);
         },
         error => {
@@ -163,6 +163,7 @@ export default function MapContainer(props) {
     );
   }, []);
   console.log(viewTestCenters);
+
   return (
     <div>
       <Map center={center} zoom={7}>
@@ -277,6 +278,8 @@ export default function MapContainer(props) {
                     <br />
                     <p>
                       Under Observation: {locationData.under_observation},<br />
+                      Total Hospitalized: {locationData.total_hospitalised},
+                      <br />
                       Under Home Isolation: {locationData.under_home_isolation},
                       <br />
                       Cases: {locationData.corona_positive},<br />
@@ -295,27 +298,6 @@ export default function MapContainer(props) {
               return null;
             }
             return (
-                  <h3 style={{margin:"0px"}}>{location.district}</h3>
-                  Kerala<br/>
-                  <p>
-                  Under Observation: {locationData.under_observation},<br/>
-                  Total Hospitalized: {locationData.total_hospitalised},<br/>
-                  Under Home Isolation: {locationData.under_home_isolation},<br/>
-                  Cases: {locationData.corona_positive},<br/>
-                  Cured/Discharged: {locationData.cured_discharged},<br/>
-                  Deaths: {locationData.deaths}</p></Popup>
-                }
-              </Circle>)
-            })
-          }
-          {
-            Array.isArray(internationalData) && internationalData.map(location => {
-                if(location.country_region === "India"){
-                 if(countryStats === null)
-                  setCountryStats(location)
-                 return null;
-                }
-              return(
               <Circle
                 key={
                   location.province_state
