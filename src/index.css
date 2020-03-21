@@ -52,6 +52,8 @@ code {
 .switch-text {
   padding: 10px;
   font-size: 1rem;
+  display: flex;
+  align-items: center;
 }
 
 /* Switch CSS begins here */
@@ -61,6 +63,7 @@ code {
   display: inline-block;
   width: 60px;
   height: 34px;
+  margin-left: 10px;
 }
 
 /* Hide default HTML checkbox */
