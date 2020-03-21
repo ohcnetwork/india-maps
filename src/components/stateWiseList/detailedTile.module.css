@@ -1,5 +1,11 @@
 .infoTile {
   padding-right: 30px;
+  width: 240px;
+}
+@media screen and (max-width: 767px) {
+  .infoTile {
+    width: 100%;
+  }
 }
 .title {
   color: #767676;
