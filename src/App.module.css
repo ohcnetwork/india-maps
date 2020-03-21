@@ -40,9 +40,9 @@
     flex-direction: column-reverse;
   }
   .map-wrapper {
-    height: 50vh;
+    height: 80vh;
   }
   .tracker-list-container {
-    height: calc(50vh - 80px);
+    height: calc(35vh - 80px);
   }
 }
