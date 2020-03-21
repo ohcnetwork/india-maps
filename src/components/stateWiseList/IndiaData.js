@@ -26,7 +26,7 @@ export default function IndiaData(props) {
         {isDataLoaded && (
           <section>
             <div className="switch-text">
-              Test Centers
+              Show test centers
               <label className="switch">
                 <input
                   type="checkbox"
