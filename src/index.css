@@ -1,14 +1,14 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
@@ -19,35 +19,34 @@ code {
 }
 
 .information-head {
-  position:absolute;
-  background:white;
-  top:15px;
-  right:15px;
-  padding:20px;
+  position: absolute;
+  background: white;
+  top: 15px;
+  right: 15px;
+  padding: 20px;
   max-width: 40vw;
-  zIndex:100;
+  zindex: 100;
 }
 @media screen and (min-width: 400px) {
   .information-head {
-     font-size: .6em;
+    font-size: 0.6em;
   }
 }
 @media screen and (min-width: 800px) {
   .information-head {
-     font-size: .75em;
+    font-size: 0.75em;
   }
 }
 @media screen and (min-width: 1200px) {
   .information-head {
-     font-size: 1em;
+    font-size: 1em;
   }
 }
 
-.switch-text{
+.switch-text {
   padding: 10px;
   font-size: 1.5em;
 }
-
 
 /* Switch CSS begins here */
 
@@ -74,8 +73,8 @@ code {
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
@@ -86,16 +85,16 @@ code {
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #2196f3;
 }
 
 input:checked + .slider:before {
@@ -115,30 +114,29 @@ input:checked + .slider:before {
 
 /* Switch CSS ends here */
 
-
 /* Button CSS starts */
 
-a.button3{
-display:inline-block;
-padding:0.3em 1.2em;
-margin:0 0.3em 0.3em 0;
-border-radius:2em;
-box-sizing: border-box;
-text-decoration:none;
-font-family:'Roboto',sans-serif;
-font-weight:300;
-color:#FFFFFF;
-background-color:#4eb5f1;
-text-align:center;
-transition: all 0.2s;
+a.button3 {
+  display: inline-block;
+  padding: 0.3em 1.2em;
+  margin: 0 0.3em 0.3em 0;
+  border-radius: 2em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: "Roboto", sans-serif;
+  font-weight: 300;
+  color: #ffffff;
+  background-color: #4eb5f1;
+  text-align: center;
+  transition: all 0.2s;
 }
-a.button3:hover{
-background-color:#4095c6;
+a.button3:hover {
+  background-color: #4095c6;
 }
-@media screen and (max-width:30em){
-  a.button3{
-    display:block;
-    margin:0.2em auto;
+@media screen and (max-width: 30em) {
+  a.button3 {
+      display: block;
+      margin: 0.2em auto;
   }
 }
 
