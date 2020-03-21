@@ -6,7 +6,7 @@ export default function StateWiseList(props) {
   return (
     <>
       <section>
-        <div className={cx("infoTile")} style={{ width: "268px" }}>
+        <div className={cx("infoTile")} style={{ width: "240px" }}>
           <div className={cx("title")} title="Total Confirmed Cases">
             Total Confirmed Cases
           </div>
