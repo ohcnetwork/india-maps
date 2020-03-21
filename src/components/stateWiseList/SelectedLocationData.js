@@ -11,7 +11,7 @@ export default function SelectedLocationData(props) {
   const [news, setNews] = React.useState([]);
   React.useEffect(() => {
     fetch(
-      `http://newsapi.org/v2/everything?q=coronavirus ${locationData.loc}&api=news&count=5&sortBy=publishedAt&apiKey=542dde4c96ed4664a7d652b9730c635c`
+      `https://newsapi.org/v2/everything?q=coronavirus ${locationData.loc}&api=news&count=5&sortBy=publishedAt&apiKey=542dde4c96ed4664a7d652b9730c635c`
     )
       .then(res => res.json())
       .then(
