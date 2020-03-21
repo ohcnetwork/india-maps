@@ -1,0 +1,30 @@
+.title {
+  color: #767676;
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+.confirmed {
+  font-size: 32px;
+  color: #de3700;
+  font-weight: bold;
+  line-height: 40px;
+}
+.legend {
+  display: grid;
+  padding: 20px 0;
+  grid-template-columns: 8px auto min-content;
+  align-items: center;
+  grid-gap: 16px 8px;
+  font-size: 13px;
+  line-height: 20px;
+}
+.legend-icon {
+  width: 8px;
+  height: 8px;
+}
+.total {
+  color: #767676;
+  text-align: right;
+}

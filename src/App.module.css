@@ -1,0 +1,15 @@
+.app-container {
+  display: flex;
+}
+.list-wrapper {
+  flex: 2;
+  padding: 0 10px 0 20px;
+}
+.new-wrapper {
+  background-color: #efefef;
+  flex: 2;
+  padding: 0 10px 0 20px;
+}
+.map-wrapper {
+  flex: 10;
+}
