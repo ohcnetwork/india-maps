@@ -17,7 +17,12 @@ const AppHeader = props => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <img src="./coronaSafeLogo.svg" alt="CoronaSafe Logo" height={80} />
+          <img
+            className={cx("logo")}
+            src="./coronaSafeLogo.svg"
+            alt="CoronaSafe Logo"
+            height={80}
+          />
         </a>
       </AppBar>
     </>

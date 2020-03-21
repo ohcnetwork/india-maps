@@ -39,4 +39,10 @@
   .app-container {
     flex-direction: column-reverse;
   }
+  .map-wrapper {
+    height: 50vh;
+  }
+  .tracker-list-container {
+    height: calc(50vh - 80px);
+  }
 }
