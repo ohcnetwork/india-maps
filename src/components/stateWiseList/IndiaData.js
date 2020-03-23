@@ -17,7 +17,7 @@ export default function IndiaData(props) {
   const handleStateClick = stateData => {
     // filter Map - starts
     let selectedStateCoordinates = stateGeoLocation.filter(
-      aState => aState.state === stateData.loc
+      (aState, index) => aState.state === stateData.loc
     );
     // filter Map - ends
     onStateSelect(stateData, selectedStateCoordinates);
