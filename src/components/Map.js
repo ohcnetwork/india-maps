@@ -14,7 +14,7 @@ import testCenters from "../data/testCenters.js";
 import classNames from "classnames/bind";
 const cx = classNames.bind(require("./map.module.css"));
 
-const center = [9.5915668, 76.5221531];
+let center = [9.5915668, 76.5221531];
 const papaparseOptions = {
   header: true,
   dynamicTyping: true,
@@ -23,15 +23,31 @@ const papaparseOptions = {
 };
 
 const PopupLineItem = ({ type, count, legend }) => {
-  return <>
-    <div className={cx(["popup-legend", "legend-"+legend])}></div>
-    <div className={cx("count-type")}>{type}</div>
-    <div className={cx("counts")}>{count.toLocaleString(navigator.language, { maximumFractionDigits: 2 })}</div>
-  </>;
+  return (
+    <>
+      <div className={cx(["popup-legend", "legend-" + legend])}></div>
+      <div className={cx("count-type")}>{type}</div>
+      <div className={cx("counts")}>
+        {count.toLocaleString(navigator.language, { maximumFractionDigits: 2 })}
+      </div>
+    </>
+  );
 };
 
 export default function MapContainer(props) {
-  const { onStateWiseDataGetSuccess, onDistrictWiseDataGetSuccess, viewTestCenters } = props;
+  const {
+    onStateWiseDataGetSuccess,
+    onDistrictWiseDataGetSuccess,
+    viewTestCenters,
+    selectedLocCoordinate
+  } = props;
+
+  if (selectedLocCoordinate && selectedLocCoordinate.length) {
+    center = [
+      selectedLocCoordinate[0].latitude,
+      selectedLocCoordinate[0].longitude
+    ];
+  }
   const [indiaData, setIndiaData] = useState(null);
 
   const [stateData, setStateData] = useState(null);
@@ -64,7 +80,7 @@ export default function MapContainer(props) {
       if (indiaData.countryData)
         if (
           countrySummary.confirmedCasesIndian +
-          countrySummary.confirmedCasesForeign >
+            countrySummary.confirmedCasesForeign >
           indiaData.countryData.total
         )
           setIndiaData(null);
@@ -89,7 +105,7 @@ export default function MapContainer(props) {
           console.log("Received Response" + result);
           onDistrictWiseDataGetSuccess
             ? onDistrictWiseDataGetSuccess(result)
-            : (() => { })();
+            : (() => {})();
           setDistrictData(result);
         },
         error => {
@@ -104,7 +120,7 @@ export default function MapContainer(props) {
           console.log("Received Response" + result);
           onStateWiseDataGetSuccess
             ? onStateWiseDataGetSuccess(result.data)
-            : (() => { })();
+            : (() => {})();
           setStateData(
             Object.assign(
               {},
@@ -146,8 +162,8 @@ export default function MapContainer(props) {
       // console.log(formattedDate);
       readRemoteFile(
         "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" +
-        formattedDate +
-        ".csv",
+          formattedDate +
+          ".csv",
         {
           ...papaparseOptions,
           complete: parseInternationalData,
@@ -167,8 +183,8 @@ export default function MapContainer(props) {
     // console.log(formattedDate);
     readRemoteFile(
       "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" +
-      formattedDate +
-      ".csv",
+        formattedDate +
+        ".csv",
       {
         ...papaparseOptions,
         complete: parseInternationalData,
@@ -187,76 +203,103 @@ export default function MapContainer(props) {
         />
         {indiaData && indiaData.stateData
           ? geoLocation.map(location => {
-            console.log(
-              location.state +
-              "|" +
-              JSON.stringify(indiaData.stateData[location.state])
-            );
-            const locationData = indiaData.stateData[location.state];
-            if (locationData.cases === 0 || location.state === "Kerala")
-              return null;
-            return (
-              <Circle
-                key={location.state}
-                center={[location.latitude, location.longitude]}
-                fillColor="red"
-                radius={15000 + locationData.cases * 2500}
-                onMouseOver={e => {
-                  firstLoad && setFirstLoad(false);
-                  e.target.openPopup();
-                }}
-              >
-                <Popup>
-                  <h3>{location.state}</h3>
-                  <div className={cx("popup-line-wrap")}>
-                    <PopupLineItem legend="cases" type="Cases" count={locationData.cases} />
-                    <PopupLineItem legend="cured" type="Cured/Discharged" count={locationData.cured_discharged} />
-                    <PopupLineItem legend="death" type="Deaths" count={locationData.Deaths} />
-                    <hr />
-                    Helpline: {locationData.helpline}
-                  </div>
-                </Popup>
-              </Circle>
-            );
-          })
+              console.log(
+                location.state +
+                  "|" +
+                  JSON.stringify(indiaData.stateData[location.state])
+              );
+              const locationData = indiaData.stateData[location.state];
+              if (locationData.cases === 0 || location.state === "Kerala")
+                return null;
+              return (
+                <Circle
+                  key={location.state}
+                  center={[location.latitude, location.longitude]}
+                  fillColor="red"
+                  radius={15000 + locationData.cases * 2500}
+                  onMouseOver={e => {
+                    firstLoad && setFirstLoad(false);
+                    e.target.openPopup();
+                  }}
+                >
+                  <Popup>
+                    <h3>{location.state}</h3>
+                    <div className={cx("popup-line-wrap")}>
+                      <PopupLineItem
+                        legend="cases"
+                        type="Cases"
+                        count={locationData.cases}
+                      />
+                      <PopupLineItem
+                        legend="cured"
+                        type="Cured/Discharged"
+                        count={locationData.cured_discharged}
+                      />
+                      <PopupLineItem
+                        legend="death"
+                        type="Deaths"
+                        count={locationData.Deaths}
+                      />
+                      <hr />
+                      Helpline: {locationData.helpline}
+                    </div>
+                  </Popup>
+                </Circle>
+              );
+            })
           : stateData &&
-          geoLocation.map(location => {
-            // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
-            const locationData = stateData[location.state];
-            if (
-              locationData === undefined ||
-              (locationData.confirmedCasesIndian === 0 &&
-                locationData.confirmedCasesForeign === 0) ||
-              location.state === "Kerala"
-            )
-              return null;
-            return (
-              <Circle
-                key={location.state}
-                center={[location.latitude, location.longitude]}
-                fillColor="red"
-                radius={
-                  15000 +
-                  (locationData.confirmedCasesIndian +
-                    locationData.confirmedCasesForeign) *
-                  2500
-                }
-                onMouseOver={e => {
-                  firstLoad && setFirstLoad(false);
-                  e.target.openPopup();
-                }}
-              >
-                <Popup>
-                  <h3>{location.state}</h3>
-                  <div className={cx("popup-line-wrap")}>
-                    <PopupLineItem legend="cases" type="Cases" count={locationData.confirmedCasesIndian + locationData.confirmedCasesForeign} />
-                    <PopupLineItem legend="cured" type="Cured/Discharged" count={locationData.discharged} />
-                    <PopupLineItem legend="death" type="Deaths" count={locationData.deaths} />
-                  </div>
-                </Popup>
-              </Circle>
-            );
-          })}
+            geoLocation.map(location => {
+              // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
+              const locationData = stateData[location.state];
+              if (
+                locationData === undefined ||
+                (locationData.confirmedCasesIndian === 0 &&
+                  locationData.confirmedCasesForeign === 0) ||
+                location.state === "Kerala"
+              )
+                return null;
+              return (
+                <Circle
+                  key={location.state}
+                  center={[location.latitude, location.longitude]}
+                  fillColor="red"
+                  radius={
+                    15000 +
+                    (locationData.confirmedCasesIndian +
+                      locationData.confirmedCasesForeign) *
+                      2500
+                  }
+                  onMouseOver={e => {
+                    firstLoad && setFirstLoad(false);
+                    e.target.openPopup();
+                  }}
+                >
+                  <Popup>
+                    <h3>{location.state}</h3>
+                    <div className={cx("popup-line-wrap")}>
+                      <PopupLineItem
+                        legend="cases"
+                        type="Cases"
+                        count={
+                          locationData.confirmedCasesIndian +
+                          locationData.confirmedCasesForeign
+                        }
+                      />
+                      <PopupLineItem
+                        legend="cured"
+                        type="Cured/Discharged"
+                        count={locationData.discharged}
+                      />
+                      <PopupLineItem
+                        legend="death"
+                        type="Deaths"
+                        count={locationData.deaths}
+                      />
+                    </div>
+                  </Popup>
+                </Circle>
+              );
+            })}
         {districtData &&
           districtGeoLocation.map(location => {
             // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
@@ -291,12 +334,36 @@ export default function MapContainer(props) {
                     Kerala
                     <br />
                     <div className={cx("popup-line-wrap")}>
-                      <PopupLineItem legend="observation" type="Observation" count={locationData.under_observation} />
-                      <PopupLineItem legend="hospitalized" type="Hospitalized" count={locationData.total_hospitalised} />
-                      <PopupLineItem legend="home-isolation" type="Home Isolation" count={locationData.corona_positive} />
-                      <PopupLineItem legend="cases" type="Cases" count={locationData.under_observation} />
-                      <PopupLineItem legend="cured" type="Cured/Discharged" count={locationData.cured_discharged} />
-                      <PopupLineItem legend="death" type="Deaths" count={locationData.deaths} />
+                      <PopupLineItem
+                        legend="observation"
+                        type="Observation"
+                        count={locationData.under_observation}
+                      />
+                      <PopupLineItem
+                        legend="hospitalized"
+                        type="Hospitalized"
+                        count={locationData.total_hospitalised}
+                      />
+                      <PopupLineItem
+                        legend="home-isolation"
+                        type="Home Isolation"
+                        count={locationData.corona_positive}
+                      />
+                      <PopupLineItem
+                        legend="cases"
+                        type="Cases"
+                        count={locationData.under_observation}
+                      />
+                      <PopupLineItem
+                        legend="cured"
+                        type="Cured/Discharged"
+                        count={locationData.cured_discharged}
+                      />
+                      <PopupLineItem
+                        legend="death"
+                        type="Deaths"
+                        count={locationData.deaths}
+                      />
                     </div>
                   </Popup>
                 )}
@@ -336,11 +403,23 @@ export default function MapContainer(props) {
                     </span>
                   )}
                   <div className={cx("popup-line-wrap")}>
-                    <PopupLineItem legend="cases" type="Cases" count={location.confirmed} />
-                    <PopupLineItem legend="cured" type="Cured/Discharged" count={location.recovered} />
-                    <PopupLineItem legend="death" type="Deaths" count={location.deaths} />
+                    <PopupLineItem
+                      legend="cases"
+                      type="Cases"
+                      count={location.confirmed}
+                    />
+                    <PopupLineItem
+                      legend="cured"
+                      type="Cured/Discharged"
+                      count={location.recovered}
+                    />
+                    <PopupLineItem
+                      legend="death"
+                      type="Deaths"
+                      count={location.deaths}
+                    />
                   </div>
-                  <hr/>
+                  <hr />
                   Last Update: {location.last_update}
                   <br />
                 </Popup>

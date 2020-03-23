@@ -5,6 +5,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import StatWiseList from "./StatWiseList";
 import DetailedTile from "./DetailedTile";
+import stateGeoLocation from "../../data/geoLocation";
 import classNames from "classnames/bind";
 const cx = classNames.bind(require("./stateWiseList.module.css"));
 export default function IndiaData(props) {
@@ -14,7 +15,12 @@ export default function IndiaData(props) {
   const summary = indiaData.summary;
   const stateWiseData = indiaData.regional;
   const handleStateClick = stateData => {
-    onStateSelect(stateData);
+    // filter Map - starts
+    let selectedStateCoordinates = stateGeoLocation.filter(
+      aState => aState.state === stateData.loc
+    );
+    // filter Map - ends
+    onStateSelect(stateData, selectedStateCoordinates);
   };
   const handleTestCentersToggle = () => {
     props.onTesteCenterToggle(!viewTestCenters);

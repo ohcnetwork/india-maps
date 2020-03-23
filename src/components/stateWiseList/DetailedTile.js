@@ -17,7 +17,7 @@ export default function DetailedTile(props) {
               style={{ background: "rgb(244, 195, 99)" }}
             ></div>
             <div className={cx("description")}>Active cases</div>
-            <div className={cx("total")}>
+            <div className={`${cx("total")} ${cx("active-case")} `}>
               {locationData.total - locationData.discharged || 0}
             </div>
             <div
@@ -25,13 +25,17 @@ export default function DetailedTile(props) {
               style={{ background: "rgb(96, 187, 105)" }}
             ></div>
             <div className={cx("description")}>Recovered cases</div>
-            <div className={cx("total")}>{locationData.discharged || 0}</div>
+            <div className={`${cx("total")} ${cx("recovered-case")}`}>
+              {locationData.discharged || 0}
+            </div>
             <div
               className={cx("legend-icon")}
               style={{ background: "rgb(118, 118, 118)" }}
             ></div>
             <div className={cx("description")}>Deaths</div>
-            <div className={cx("total")}>{locationData.deaths || 0}</div>
+            <div className={`${cx("total")} ${cx("death-case")}`}>
+              {locationData.deaths || 0}
+            </div>
           </div>
         </div>
       </section>
