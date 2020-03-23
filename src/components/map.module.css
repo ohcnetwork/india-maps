@@ -1,0 +1,34 @@
+.popup-line-wrap {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 0.2fr 1fr 1fr;
+  grid-column-gap: 10px;
+  grid-row-gap: 2px;
+  width: 100%;
+}
+.counts {
+  text-align: right;
+}
+.popup-legend {
+  width: 8px;
+  height: 8px;
+  margin-top: 4px;
+}
+.legend-cases {
+  background: rgb(244, 195, 99);
+}
+.legend-cured {
+  background: rgb(96, 187, 105);
+}
+.legend-death {
+  background: rgb(222, 55, 0);
+}
+.legend-home-isolation {
+  background: gray;
+}
+.legend-observation {
+  background: rgb(105, 103, 193);
+}
+.legend-hospitalized {
+  background: #ca7575;
+}
