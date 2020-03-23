@@ -15,6 +15,7 @@ function App() {
   const [selectedLocationData, setSelectedLocationData] = React.useState({
     summary: (indiaData || {}).summary || {}
   });
+  const [selectedLocCoordinate, setSelectedLocCoordinate] = React.useState([]);
   const [
     selectedLocationDataDispaly,
     setSelectedLocationDataDispaly
@@ -29,7 +30,8 @@ function App() {
     setDistrictData(data);
   };
 
-  const handleStateSelect = stateData => {
+  const handleStateSelect = (stateData, selectedLocationCoordinate) => {
+    setSelectedLocCoordinate(selectedLocationCoordinate);
     setSelectedLocationDataDispaly(
       dimensions.width <= mobileWindowSizeBreakPoint
     );
@@ -39,6 +41,7 @@ function App() {
       subLocations: districtData[stateData.loc.toLowerCase()]
     });
   };
+
   const [dimensions, setDimensions] = React.useState({
     height: window.innerHeight,
     width: window.innerWidth
@@ -126,6 +129,7 @@ function App() {
               onStateWiseDataGetSuccess={handleStateWiseDataSuccess}
               onDistrictWiseDataGetSuccess={handleDistrictWiseDataSuccess}
               viewTestCenters={showTestCenters}
+              selectedLocCoordinate={selectedLocCoordinate}
             />
           </div>
         </section>
