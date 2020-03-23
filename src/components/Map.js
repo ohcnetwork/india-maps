@@ -24,11 +24,12 @@ const papaparseOptions = {
 
 const PopupLineItem = ({ type, count, legend }) => {
   return <>
-    <div className={cx([`popup-legend`, `legend-${legend}`])}></div>
+    <div className={cx(["popup-legend", "legend-"+legend])}></div>
     <div className={cx("count-type")}>{type}</div>
     <div className={cx("counts")}>{count.toLocaleString(navigator.language, { maximumFractionDigits: 2 })}</div>
   </>;
-}
+};
+
 export default function MapContainer(props) {
   const { onStateWiseDataGetSuccess, onDistrictWiseDataGetSuccess, viewTestCenters } = props;
   const [indiaData, setIndiaData] = useState(null);
