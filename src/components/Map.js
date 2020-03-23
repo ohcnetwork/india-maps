@@ -347,12 +347,12 @@ export default function MapContainer(props) {
                       <PopupLineItem
                         legend="home-isolation"
                         type="Home Isolation"
-                        count={locationData.corona_positive}
+                        count={locationData.under_home_isolation}
                       />
                       <PopupLineItem
                         legend="cases"
                         type="Cases"
-                        count={locationData.under_observation}
+                        count={locationData.corona_positive}
                       />
                       <PopupLineItem
                         legend="cured"
