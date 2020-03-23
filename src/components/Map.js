@@ -294,7 +294,7 @@ export default function MapContainer(props) {
                       <PopupLineItem legend="observation" type="Observation" count={locationData.under_observation} />
                       <PopupLineItem legend="hospitalized" type="Hospitalized" count={locationData.total_hospitalised} />
                       <PopupLineItem legend="home-isolation" type="Home Isolation" count={locationData.corona_positive} />
-                      <PopupLineItem legend="cases" type="Cases" count={locationData.under_observation} />
+                      <PopupLineItem legend="cases" type="Cases" count={locationData.corona_positive} />
                       <PopupLineItem legend="cured" type="Cured/Discharged" count={locationData.cured_discharged} />
                       <PopupLineItem legend="death" type="Deaths" count={locationData.deaths} />
                     </div>
