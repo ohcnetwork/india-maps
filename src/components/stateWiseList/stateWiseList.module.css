@@ -18,6 +18,7 @@
 .case-total {
   color: #fff;
   text-align: right;
+  font-weight: bold;
   padding: 3px 10px;
   border-radius: 4px;
   cursor: pointer;
