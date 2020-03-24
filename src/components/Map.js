@@ -21,9 +21,7 @@ const papaparseOptions = {
   skipEmptyLines: true,
   transformHeader: header => header.toLowerCase().replace(/\W/g, "_")
 };
-//temp1.data.regional.filter(d => !!d.discharged).map(d => ({state: d.loc, discharged: d.discharged}))
-//temp1.data.regional.filter(d => !!(d.confirmedCasesIndian + d.confirmedCasesForeign)).map(d=> ({state: d.loc, indian: d.confirmedCasesIndian, foreign: d.confirmedCasesForeign}))
-//temp1.data.regional.filter(d => !!d.deaths).map(d=> ({state: d.loc, dead: d.deaths}))
+
 const PopupLineItem = ({ type, count, legend }) => {
   return (
     <>
@@ -146,7 +144,6 @@ export default function MapContainer(props) {
           );
 
           setCountrySummary(result.data.summary);
-          // settemp1.data.regional.filter(d => !!d.discharged).map(d => ({ state: d.loc, discharged: d.discharged }))
         },
         error => {
           console.log("Error Response");

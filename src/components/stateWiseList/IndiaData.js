@@ -26,14 +26,13 @@ export default function IndiaData(props) {
     props.onTesteCenterToggle(!viewTestCenters);
   };
 
-  const statByType = { tileList: [], total: 0, styles: [] };
+  const statByType = { tileList: [], total: 0, styleClasses: [] };
   const initialStatsByType = {death: statByType, active: statByType, recovered: statByType, all: statByType}
   const [indianStatsByType, setIndianStatsByType] = useState(initialStatsByType);
   const [selectedType, setSelectedType] = useState('all');
 
   // creating categorized state/count/fullData lookup for filtering StateWiseList by each case
   useEffect(() => {
-    console.log('indiaData', indiaData)
     if (!indiaData || !indiaData.regional) {
       return;
     }
@@ -42,29 +41,28 @@ export default function IndiaData(props) {
         tileList: indiaData.regional.filter(d => !!d.deaths)
                                     .map(d => ({state: d.loc, count: d.deaths, stateData: d})),
         total: indiaData.summary.deaths,
-        styles: ["case-total", "death-case"] 
+        styleClasses: ["case-total", "death-case"] 
       },
       recovered: {
         tileList: indiaData.regional
                     .filter(d => !!d.discharged)
                     .map(d => ({state: d.loc, count: d.discharged, stateData: d})),
         total: indiaData.summary.discharged,
-        styles: ["case-total", "recovered-case"] 
+        styleClasses: ["case-total", "recovered-case"] 
       },
       active: {
         tileList: indiaData.regional.filter(d => !!(d.confirmedCasesIndian + d.confirmedCasesForeign))
                                     .map(d => ({state: d.loc, count: (d.confirmedCasesIndian + d.confirmedCasesForeign) - d.discharged, stateData: d})),
         total: indiaData.summary.total - indiaData.summary.discharged,
-        styles: ["case-total", "active-case"] 
+        styleClasses: ["case-total", "active-case"] 
       },
       all: {
         tileList: indiaData.regional.map(d => ({ state: d.loc, count: d.confirmedCasesIndian + d.confirmedCasesForeign, stateData: d})),
         total: indiaData.summary.total,
-        styles: ["total-confirmed-cases"] 
+        styleClasses: ["total-confirmed-cases"] 
 
       }
     };
-    console.log(statsByType);
     setIndianStatsByType(statsByType);
   }, [indiaData])
 
@@ -90,7 +88,7 @@ export default function IndiaData(props) {
             <List component="nav">
               <ListItem button>
                 <ListItemText primary="India" />
-                <ListItemSecondaryAction className={cx(indianStatsByType[selectedType].styles)}>
+                <ListItemSecondaryAction className={cx(indianStatsByType[selectedType].styleClasses)}>
                   {indianStatsByType[selectedType].total}{" "}
                 </ListItemSecondaryAction>
               </ListItem>
