@@ -30,7 +30,7 @@ const PopupLineItem = ({ type, count, legend }) => {
       <div className={cx(["popup-legend", "legend-" + legend])}></div>
       <div className={cx("count-type")}>{type}</div>
       <div className={cx("counts")}>
-        {count.toLocaleString(navigator.language, { maximumFractionDigits: 2 })}
+        {count !== undefined && count !== null ? count.toLocaleString(navigator.language, { maximumFractionDigits: 2 }) : ''}
       </div>
     </>
   );
