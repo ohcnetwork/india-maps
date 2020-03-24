@@ -66,7 +66,7 @@ export default function MapContainer(props) {
   const parseInternationalData = data => {
     // console.log("Setting International Data");
     // console.log("International Data:" + JSON.stringify(data.data))
-    setInternationalData(data.data);
+    // setInternationalData(data.data);
     setWorldStats(
       data.data.reduce((a, b) => ({
         confirmed: a.confirmed + b.confirmed,
