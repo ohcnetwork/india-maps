@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames/bind";
 const cx = classNames.bind(require("./detailedTile.module.css"));
 export default function DetailedTile(props) {
-  const { locationData = {}, handleCaseTypeClick } = props;
+  const { locationData = {}, handleCaseTypeClick = ()=>{} } = props;
   return (
     <>
       <section>

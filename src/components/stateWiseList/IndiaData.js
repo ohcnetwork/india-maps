@@ -53,7 +53,7 @@ export default function IndiaData(props) {
       },
       active: {
         tileList: indiaData.regional.filter(d => !!(d.confirmedCasesIndian + d.confirmedCasesForeign))
-                                    .map(d => ({state: d.loc, count: d.confirmedCasesIndian + d.confirmedCasesForeign, stateData: d})),
+                                    .map(d => ({state: d.loc, count: (d.confirmedCasesIndian + d.confirmedCasesForeign) - d.discharged, stateData: d})),
         total: indiaData.summary.total - indiaData.summary.discharged,
         styles: ["case-total", "active-case"] 
       },
@@ -64,6 +64,7 @@ export default function IndiaData(props) {
 
       }
     };
+    console.log(statsByType);
     setIndianStatsByType(statsByType);
   }, [indiaData])
 
