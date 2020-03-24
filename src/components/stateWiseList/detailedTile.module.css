@@ -34,26 +34,19 @@
   height: 8px;
 }
 .total {
-  color: #767676;
+  color: #fff;
   text-align: right;
+  padding: 0 10px;
+  border-radius: 4px;
+  cursor:pointer;
 }
 
 .active-case {
-  padding: 0 10px;
   background-color: rgb(244, 195, 99);
-  color: #fff;
-  border-radius: 4px;
 }
-
 .recovered-case {
-  padding: 0 10px;
   background-color: green;
-  color: #fff;
-  border-radius: 4px;
 }
 .death-case {
-  padding: 0 10px;
   background-color: red;
-  color: #fff;
-  border-radius: 4px;
 }
