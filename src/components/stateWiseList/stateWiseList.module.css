@@ -14,3 +14,28 @@
 .state-list li:not(:last-child) {
   margin-bottom: 12px;
 }
+
+.case-total {
+  color: #fff;
+  text-align: right;
+  padding: 3px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  min-width: 49px;
+}
+.total-confirmed-cases {
+    color: #de3700;
+    font-weight: bold;
+    line-height: 40px;
+    text-align: right;
+    padding-right: 10px;
+}
+.active-case {
+  background-color: rgb(244, 195, 99);
+}
+.recovered-case {
+  background-color: green;
+}
+.death-case {
+  background-color: red;
+}

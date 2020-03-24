@@ -26,15 +26,14 @@ export default function StateWiseList(props) {
               return (
                 <ListItem
                   button
-                  key={stateData.loc}
+                  key={stateData.state}
                   className={cx("item-list")}
-                  onClick={event => handleListItemClick(stateData, i)}
+                  onClick={event => handleListItemClick(stateData.stateData, i)}
                   selected={selectedIndex === i}
                 >
-                  <ListItemText key={stateData.loc} primary={stateData.loc} />
+                  <ListItemText key={stateData.state} primary={stateData.state} />
                   <ListItemSecondaryAction>
-                    {stateData.confirmedCasesIndian +
-                      stateData.confirmedCasesForeign}
+                    {stateData.count}
                   </ListItemSecondaryAction>
                 </ListItem>
               );
