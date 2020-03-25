@@ -2,6 +2,7 @@ import React from "react";
 import NewsCard from "./NewsCard";
 import DetailedTile from "./DetailedTile";
 import DistrictWiseList from "./DistrictWiseList";
+import Chart from "../Chart";
 import classNames from "classnames/bind";
 const cx = classNames.bind(require("./stateWiseList.module.css"));
 export default function SelectedLocationData(props) {
@@ -36,9 +37,8 @@ export default function SelectedLocationData(props) {
                   locationData.summary.confirmedCasesForeign
               }}
             />
-          <DistrictWiseList
-              districtWiseData={locationData.subLocations}
-            />
+            <Chart locationData={locationData} />
+            <DistrictWiseList districtWiseData={locationData.subLocations} />
             <NewsCard news={news} />
           </section>
         )}

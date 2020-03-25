@@ -370,7 +370,7 @@ export default function MapContainer(props) {
               </Circle>
             );
           })}
-        {Array.isArray(internationalData) &&
+        {/* {Array.isArray(internationalData) &&
           internationalData.map(location => {
             if (location.country_region === "India") {
               if (countryStats === null) setCountryStats(location);
@@ -425,7 +425,7 @@ export default function MapContainer(props) {
                 </Popup>
               </Circle>
             );
-          })}
+          })} */}
         {viewTestCenters &&
           testCenters.map(testCenter => {
             return (
