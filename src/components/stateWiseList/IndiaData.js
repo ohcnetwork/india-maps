@@ -23,7 +23,7 @@ export default function IndiaData(props) {
     onStateSelect(stateData, selectedStateCoordinates);
   };
   const handleTestCentersToggle = () => {
-    props.onTesteCenterToggle(!viewTestCenters);
+    props.onTestCenterToggle(!viewTestCenters);
   };
 
   const statByType = { tileList: [], total: 0, styleClasses: [] };
