@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 
 class Chart extends Component {
   constructor(props) {
@@ -73,7 +73,7 @@ class Chart extends Component {
       labels: dates,
       datasets: [
         {
-          label: `Total cases as of ${lastRefreshed}`,
+          label: `Total Cases`,
           fill: false,
           lineTension: 0.1,
           backgroundColor: "rgba(255, 0, 0, 0.4)",
@@ -95,7 +95,9 @@ class Chart extends Component {
         }
       ]
     };
-    return <Line ref={this.chartReference} data={data} />;
+    return (
+      <Bar ref={this.chartReference} data={data} height={150} width={150} />
+    );
   }
 }
 
