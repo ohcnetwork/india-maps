@@ -15,23 +15,23 @@ export default class SelectedLocationData extends Component {
   }
 
   componentDidMount() {
-    fetch(
-      `https://newsapi.org/v2/everything?q=coronavirus ${this.props.locationData.loc}&api=news&count=5&sortBy=publishedAt&apiKey=542dde4c96ed4664a7d652b9730c635c`
-    )
-      .then(res => res.json())
-      .then(
-        result => {
-          this.setState({
-            news: result.articles || []
-          });
-        },
-        error => {
-          this.setState({
-            news: [],
-            error
-          });
-        }
-      );
+    // fetch(
+    //   `https://newsapi.org/v2/everything?q=coronavirus ${this.props.locationData.loc}&api=news&count=5&sortBy=publishedAt&apiKey=542dde4c96ed4664a7d652b9730c635c`
+    // )
+    //   .then(res => res.json())
+    //   .then(
+    //     result => {
+    //       this.setState({
+    //         news: result.articles || []
+    //       });
+    //     },
+    //     error => {
+    //       this.setState({
+    //         news: [],
+    //         error
+    //       });
+    //     }
+    //   );
   }
 
   render() {
@@ -62,7 +62,7 @@ export default class SelectedLocationData extends Component {
                 <DistrictWiseList
                   districtWiseData={locationData.subLocations}
                 />
-                <NewsCard news={news} />
+              {/*<NewsCard news={news} />*/}
               </section>
             )}
           </section>
