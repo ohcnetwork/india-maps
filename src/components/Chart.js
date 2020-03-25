@@ -73,7 +73,7 @@ class Chart extends Component {
       labels: dates,
       datasets: [
         {
-          label: lastRefreshed,
+          label: `Total cases as of ${lastRefreshed}`,
           fill: false,
           lineTension: 0.1,
           backgroundColor: "rgba(255, 0, 0, 0.4)",
