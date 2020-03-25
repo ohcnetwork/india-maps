@@ -22,8 +22,8 @@ const papaparseOptions = {
   transformHeader: header => header.toLowerCase().replace(/\W/g, "_")
 };
 
-// aggregate US data by province and add metrics total
-const mapToInternationalDataWithTotalMetrics = (data) => {
+// to aggregate data by state+country and sum up metrics
+const groupMetricsByStateAndCountry = (data) => {
   const internationalDataLookup = Array.isArray(data)
     ? data.reduce((intLookup, data) => {
       const key = `${data.province_state}.${data.country_region}`;
@@ -85,7 +85,7 @@ export default function MapContainer(props) {
   const [firstLoad, setFirstLoad] = useState(true);
 
   const parseInternationalData = ({data}) => {
-    setInternationalData(mapToInternationalDataWithTotalMetrics(data));
+    setInternationalData(groupMetricsByStateAndCountry(data));
     Array.isArray(data) && setWorldStats(
       data.reduce((a, b) => ({
         confirmed: a.confirmed + b.confirmed,
