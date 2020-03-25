@@ -22,13 +22,34 @@ const papaparseOptions = {
   transformHeader: header => header.toLowerCase().replace(/\W/g, "_")
 };
 
+// to aggregate data by state+country and sum up metrics
+const groupMetricsByStateAndCountry = (data) => {
+  const internationalDataLookup = Array.isArray(data)
+    ? data.reduce((intLookup, data) => {
+      const key = `${data.province_state}.${data.country_region}`;
+      if (intLookup[key]) {
+        intLookup[key] = {
+          ...intLookup[key],
+          deaths: intLookup[key].deaths + data.deaths,
+          confirmed: intLookup[key].confirmed + data.confirmed,
+          recovered: intLookup[key].recovered + data.recovered,
+          active: intLookup[key].active + data.active,
+        };
+        return intLookup;
+      }
+      intLookup[key] = data;
+      return intLookup
+    }, {})
+    : {};
+  return Object.keys(internationalDataLookup).map(key => internationalDataLookup[key]);
+} 
 const PopupLineItem = ({ type, count, legend }) => {
   return (
     <>
       <div className={cx(["popup-legend", "legend-" + legend])}></div>
       <div className={cx("count-type")}>{type}</div>
       <div className={cx("counts")}>
-        {count.toLocaleString(navigator.language, { maximumFractionDigits: 2 })}
+        {count !== undefined && count !== null ? count.toLocaleString(navigator.language, { maximumFractionDigits: 2 }) : ''}
       </div>
     </>
   );
@@ -55,7 +76,7 @@ export default function MapContainer(props) {
 
   const [districtData, setDistrictData] = useState(null);
 
-  const [internationalData, setInternationalData] = useState(null);
+  const [internationalData, setInternationalData] = useState([]);
   const [countryStats, setCountryStats] = useState(null);
   const [worldStats, setWorldStats] = useState(null);
 
@@ -63,12 +84,10 @@ export default function MapContainer(props) {
   const [showInfoHead, setShowInfoHead] = useState(true);
   const [firstLoad, setFirstLoad] = useState(true);
 
-  const parseInternationalData = data => {
-    // console.log("Setting International Data");
-    // console.log("International Data:" + JSON.stringify(data.data))
-    // setInternationalData(data.data);
-    setWorldStats(
-      data.data.reduce((a, b) => ({
+  const parseInternationalData = ({data}) => {
+    setInternationalData(groupMetricsByStateAndCountry(data));
+    Array.isArray(data) && setWorldStats(
+      data.reduce((a, b) => ({
         confirmed: a.confirmed + b.confirmed,
         deaths: a.deaths + b.deaths,
         recovered: a.recovered + b.recovered
@@ -142,6 +161,7 @@ export default function MapContainer(props) {
               )
             )
           );
+
           setCountrySummary(result.data.summary);
         },
         error => {
@@ -370,8 +390,7 @@ export default function MapContainer(props) {
               </Circle>
             );
           })}
-        {Array.isArray(internationalData) &&
-          internationalData.map(location => {
+        {internationalData.map((location, index) => {
             if (location.country_region === "India") {
               if (countryStats === null) setCountryStats(location);
               return null;
@@ -383,7 +402,7 @@ export default function MapContainer(props) {
                     ? location.province_state + "." + location.country_region
                     : location.country_region
                 }
-                center={[location.latitude, location.longitude]}
+                center={[location.lat, location.long_]}
                 fillColor="red"
                 radius={15000 + location.confirmed * 20}
                 onMouseOver={e => {

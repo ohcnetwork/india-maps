@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -23,8 +23,50 @@ export default function IndiaData(props) {
     onStateSelect(stateData, selectedStateCoordinates);
   };
   const handleTestCentersToggle = () => {
-    props.onTesteCenterToggle(!viewTestCenters);
+    props.onTestCenterToggle(!viewTestCenters);
   };
+
+  const statByType = { tileList: [], total: 0, styleClasses: [] };
+  const initialStatsByType = {death: statByType, active: statByType, recovered: statByType, all: statByType}
+  const [indianStatsByType, setIndianStatsByType] = useState(initialStatsByType);
+  const [selectedType, setSelectedType] = useState('all');
+
+  // creating categorized state/count/fullData lookup for filtering StateWiseList by each case
+  useEffect(() => {
+    if (!indiaData || !indiaData.regional) {
+      return;
+    }
+    const statsByType = {
+      death: { 
+        tileList: indiaData.regional.filter(d => !!d.deaths)
+                                    .map(d => ({state: d.loc, count: d.deaths, stateData: d})),
+        total: indiaData.summary.deaths,
+        styleClasses: ["case-total", "death-case"] 
+      },
+      recovered: {
+        tileList: indiaData.regional
+                    .filter(d => !!d.discharged)
+                    .map(d => ({state: d.loc, count: d.discharged, stateData: d})),
+        total: indiaData.summary.discharged,
+        styleClasses: ["case-total", "recovered-case"] 
+      },
+      active: {
+        tileList: indiaData.regional.filter(d => !!(d.confirmedCasesIndian + d.confirmedCasesForeign))
+                                    .map(d => ({state: d.loc, count: (d.confirmedCasesIndian + d.confirmedCasesForeign) - d.discharged, stateData: d})),
+        total: indiaData.summary.total - indiaData.summary.discharged,
+        styleClasses: ["case-total", "active-case"] 
+      },
+      all: {
+        tileList: indiaData.regional.map(d => ({ state: d.loc, count: d.confirmedCasesIndian + d.confirmedCasesForeign, stateData: d})),
+        total: indiaData.summary.total,
+        styleClasses: ["total-confirmed-cases"] 
+
+      }
+    };
+    setIndianStatsByType(statsByType);
+  }, [indiaData])
+
+  const handleCaseTypeClick = caseType => setSelectedType(caseType);
   return (
     <>
       <section className={cx("list-wrapper")}>
@@ -42,17 +84,17 @@ export default function IndiaData(props) {
                 <span className="slider round"></span>
               </label>
             </div>
-            <DetailedTile locationData={indiaData.summary} />
+            <DetailedTile locationData={indiaData.summary} handleCaseTypeClick={handleCaseTypeClick}/>
             <List component="nav">
               <ListItem button>
                 <ListItemText primary="India" />
-                <ListItemSecondaryAction>
-                  {summary.total}{" "}
+                <ListItemSecondaryAction className={cx(indianStatsByType[selectedType].styleClasses)}>
+                  {indianStatsByType[selectedType].total}{" "}
                 </ListItemSecondaryAction>
               </ListItem>
             </List>
             <StatWiseList
-              stateWiseData={stateWiseData}
+              stateWiseData={indianStatsByType[selectedType].tileList}
               onStateClick={handleStateClick}
             />
           </section>

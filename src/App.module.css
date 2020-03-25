@@ -35,6 +35,15 @@
   flex: 10;
   height: auto;
 }
+
+.line-chart {
+  position: absolute;
+  right: 0px;
+  background: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.75) 0px 0px 31px -13px;
+  padding: 15px;
+}
+
 @media screen and (max-width: 767px) {
   .app-container {
     flex-direction: column-reverse;
@@ -44,5 +53,8 @@
   }
   .tracker-list-container {
     height: calc(35vh - 80px);
+  }
+  .line-chart {
+    display: none;
   }
 }
