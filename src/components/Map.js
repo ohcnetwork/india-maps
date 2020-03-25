@@ -66,7 +66,9 @@ export default function MapContainer(props) {
   const parseInternationalData = data => {
     // console.log("Setting International Data");
     // console.log("International Data:" + JSON.stringify(data.data))
-    const dataWithoutUSProvince = Array.isArray(data.data) ? data.data.filter(data => data.province_state === null) : [];
+    const dataWithoutUSProvince = Array.isArray(data.data) 
+                                    ? data.data.filter(data => data.province_state === null) 
+                                    : [];
     setInternationalData(dataWithoutUSProvince);
     setWorldStats(
       data.data.reduce((a, b) => ({
