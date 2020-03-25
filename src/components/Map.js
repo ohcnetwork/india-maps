@@ -22,6 +22,27 @@ const papaparseOptions = {
   transformHeader: header => header.toLowerCase().replace(/\W/g, "_")
 };
 
+// aggregate US data by province and add metrics total
+const mapToInternationalDataWithTotalMetrics = (data) => {
+  const internationalDataLookup = Array.isArray(data)
+    ? data.reduce((intLookup, data) => {
+      const key = `${data.province_state}.${data.country_region}`;
+      if (intLookup[key]) {
+        intLookup[key] = {
+          ...intLookup[key],
+          deaths: intLookup[key].deaths + data.deaths,
+          confirmed: intLookup[key].confirmed + data.confirmed,
+          recovered: intLookup[key].recovered + data.recovered,
+          active: intLookup[key].active + data.active,
+        };
+        return intLookup;
+      }
+      intLookup[key] = data;
+      return intLookup
+    }, {})
+    : {};
+  return Object.keys(internationalDataLookup).map(key => internationalDataLookup[key]);
+} 
 const PopupLineItem = ({ type, count, legend }) => {
   return (
     <>
@@ -63,15 +84,10 @@ export default function MapContainer(props) {
   const [showInfoHead, setShowInfoHead] = useState(true);
   const [firstLoad, setFirstLoad] = useState(true);
 
-  const parseInternationalData = data => {
-    // console.log("Setting International Data");
-    // console.log("International Data:" + JSON.stringify(data.data))
-    const dataWithoutUSProvince = Array.isArray(data.data) 
-                                    ? data.data.filter(data => data.province_state === null) 
-                                    : [];
-    setInternationalData(dataWithoutUSProvince);
-    setWorldStats(
-      data.data.reduce((a, b) => ({
+  const parseInternationalData = ({data}) => {
+    setInternationalData(mapToInternationalDataWithTotalMetrics(data));
+    Array.isArray(data) && setWorldStats(
+      data.reduce((a, b) => ({
         confirmed: a.confirmed + b.confirmed,
         deaths: a.deaths + b.deaths,
         recovered: a.recovered + b.recovered
