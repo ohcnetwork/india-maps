@@ -55,7 +55,7 @@ export default function MapContainer(props) {
 
   const [districtData, setDistrictData] = useState(null);
 
-  const [internationalData, setInternationalData] = useState(null);
+  const [internationalData, setInternationalData] = useState([]);
   const [countryStats, setCountryStats] = useState(null);
   const [worldStats, setWorldStats] = useState(null);
 
@@ -66,7 +66,8 @@ export default function MapContainer(props) {
   const parseInternationalData = data => {
     // console.log("Setting International Data");
     // console.log("International Data:" + JSON.stringify(data.data))
-    // setInternationalData(data.data);
+    const dataWithoutUSProvince = Array.isArray(data.data) ? data.data.filter(data => data.province_state === null) : [];
+    setInternationalData(dataWithoutUSProvince);
     setWorldStats(
       data.data.reduce((a, b) => ({
         confirmed: a.confirmed + b.confirmed,
@@ -371,8 +372,7 @@ export default function MapContainer(props) {
               </Circle>
             );
           })}
-        {/* {Array.isArray(internationalData) &&
-          internationalData.map(location => {
+        {internationalData.map((location, index) => {
             if (location.country_region === "India") {
               if (countryStats === null) setCountryStats(location);
               return null;
@@ -384,7 +384,7 @@ export default function MapContainer(props) {
                     ? location.province_state + "." + location.country_region
                     : location.country_region
                 }
-                center={[location.latitude, location.longitude]}
+                center={[location.lat, location.long_]}
                 fillColor="red"
                 radius={15000 + location.confirmed * 20}
                 onMouseOver={e => {
@@ -426,7 +426,7 @@ export default function MapContainer(props) {
                 </Popup>
               </Circle>
             );
-          })} */}
+          })}
         {viewTestCenters &&
           testCenters.map(testCenter => {
             return (
