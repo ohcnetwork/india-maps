@@ -31,7 +31,7 @@ export default function IndiaData(props) {
   const [indianStatsByType, setIndianStatsByType] = useState(initialStatsByType);
   const [selectedType, setSelectedType] = useState('all');
 
-  const stateCountDescSort = (state1, state2) => {
+  const sortStateByCaseCountDesc = (state1, state2) => {
     if (state1.count > state2.count) {
       return -1;
     }
@@ -50,7 +50,7 @@ export default function IndiaData(props) {
       death: { 
         tileList: indiaData.regional.filter(d => !!d.deaths)
           .map(d => ({ state: d.loc, count: d.deaths, stateData: d }))
-          .sort(stateCountDescSort),
+          .sort(sortStateByCaseCountDesc),
         total: indiaData.summary.deaths,
         styleClasses: ["case-total", "death-case"] 
       },
@@ -58,20 +58,20 @@ export default function IndiaData(props) {
         tileList: indiaData.regional
                     .filter(d => !!d.discharged)
                     .map(d => ({ state: d.loc, count: d.discharged, stateData: d }))
-                    .sort(stateCountDescSort),
+                    .sort(sortStateByCaseCountDesc),
         total: indiaData.summary.discharged,
         styleClasses: ["case-total", "recovered-case"] 
       },
       active: {
         tileList: indiaData.regional.filter(d => !!(d.confirmedCasesIndian + d.confirmedCasesForeign))
                                     .map(d => ({state: d.loc, count: (d.confirmedCasesIndian + d.confirmedCasesForeign) - d.discharged, stateData: d}))
-                                    .sort(stateCountDescSort),
+                                    .sort(sortStateByCaseCountDesc),
         total: indiaData.summary.total - indiaData.summary.discharged,
         styleClasses: ["case-total", "active-case"] 
       },
       all: {
         tileList: indiaData.regional.map(d => ({ state: d.loc, count: d.confirmedCasesIndian + d.confirmedCasesForeign, stateData: d}))
-                                    .sort(stateCountDescSort),
+                                    .sort(sortStateByCaseCountDesc),
         total: indiaData.summary.total,
         styleClasses: ["total-confirmed-cases"] 
 
