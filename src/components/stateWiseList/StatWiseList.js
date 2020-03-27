@@ -36,7 +36,7 @@ export default function StateWiseList(props) {
                     primary={stateData.state}
                     className={cx("state-list-name")}
                   />
-                  <ListItemSecondaryAction>
+                  <ListItemSecondaryAction className={cx("number-of-cases")}>
                     {stateData.count}
                   </ListItemSecondaryAction>
                 </ListItem>
