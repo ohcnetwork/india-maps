@@ -62,7 +62,7 @@ export default class SelectedLocationData extends Component {
                 <DistrictWiseList
                   districtWiseData={locationData.subLocations}
                 />
-                {/*<NewsCard news={news} />*/}
+{/*<NewsCard news={news} />*/}
               </section>
             )}
           </section>

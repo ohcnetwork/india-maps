@@ -14,6 +14,7 @@
   font-size: 13px;
   text-transform: uppercase;
 }
+
 .confirmed {
   font-size: 32px;
   color: #d14f69;
@@ -21,6 +22,7 @@
   line-height: 40px;
   cursor: pointer;
 }
+
 .legend {
   display: grid;
   padding: 20px 0;
@@ -30,6 +32,7 @@
   font-size: 13px;
   line-height: 20px;
 }
+
 .legend-icon {
   width: 8px;
   height: 8px;
@@ -45,16 +48,19 @@
 .description {
   font-weight: 600;
 }
+
 .active-case {
   background-color: rgba(255, 169, 0, 0.2);
   color: #ffa900;
   font-weight: 700;
 }
+
 .recovered-case {
   background-color: rgba(129, 255, 202, 0.3);
   color: #108d90;
   font-weight: 700;
 }
+
 .death-case {
   background-color: rgba(209, 79, 105, 0.2);
   color: #d14f69;
