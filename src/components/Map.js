@@ -42,7 +42,7 @@ const groupMetricsByStateAndCountry = (data) => {
     }, {})
     : {};
   return Object.keys(internationalDataLookup).map(key => internationalDataLookup[key]);
-} 
+}
 const PopupLineItem = ({ type, count, legend }) => {
   return (
     <>
