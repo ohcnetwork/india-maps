@@ -12,6 +12,7 @@
   font-size: 24px;
   margin-bottom: 20px;
 }
+
 .state-list li {
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.05);
@@ -21,6 +22,7 @@
   line-height: 20px;
   /* padding: 10px 16px; */
 }
+
 .state-list li:not(:last-child) {
   margin-bottom: 12px;
 }
@@ -34,6 +36,7 @@
   cursor: pointer;
   min-width: 49px;
 }
+
 .total-confirmed-cases {
   color: #d14f69;
   font-weight: bold;
@@ -41,12 +44,15 @@
   text-align: right;
   padding-right: 10px;
 }
+
 .active-case {
   background-color: rgb(244, 195, 99);
 }
+
 .recovered-case {
   background-color: #108d90;
 }
+
 .death-case {
   background-color: #d14f69;
 }

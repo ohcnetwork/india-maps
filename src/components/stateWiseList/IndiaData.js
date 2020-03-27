@@ -27,16 +27,9 @@ export default function IndiaData(props) {
   };
 
   const statByType = { tileList: [], total: 0, styleClasses: [] };
-  const initialStatsByType = {
-    death: statByType,
-    active: statByType,
-    recovered: statByType,
-    all: statByType
-  };
-  const [indianStatsByType, setIndianStatsByType] = useState(
-    initialStatsByType
-  );
-  const [selectedType, setSelectedType] = useState("all");
+const initialStatsByType = {death: statByType, active: statByType, recovered: statByType, all: statByType}
+  const [indianStatsByType, setIndianStatsByType] = useState(initialStatsByType);
+  const [selectedType, setSelectedType] = useState('all');
 
   // creating categorized state/count/fullData lookup for filtering StateWiseList by each case
   useEffect(() => {
@@ -44,44 +37,34 @@ export default function IndiaData(props) {
       return;
     }
     const statsByType = {
-      death: {
-        tileList: indiaData.regional
-          .filter(d => !!d.deaths)
-          .map(d => ({ state: d.loc, count: d.deaths, stateData: d })),
+death: { 
+        tileList: indiaData.regional.filter(d => !!d.deaths)
+                                    .map(d => ({state: d.loc, count: d.deaths, stateData: d})),
         total: indiaData.summary.deaths,
-        styleClasses: ["case-total", "death-case"]
+        styleClasses: ["case-total", "death-case"] 
       },
       recovered: {
         tileList: indiaData.regional
-          .filter(d => !!d.discharged)
-          .map(d => ({ state: d.loc, count: d.discharged, stateData: d })),
+                    .filter(d => !!d.discharged)
+                    .map(d => ({state: d.loc, count: d.discharged, stateData: d})),
         total: indiaData.summary.discharged,
-        styleClasses: ["case-total", "recovered-case"]
+        styleClasses: ["case-total", "recovered-case"] 
       },
       active: {
-        tileList: indiaData.regional
-          .filter(d => !!(d.confirmedCasesIndian + d.confirmedCasesForeign))
-          .map(d => ({
-            state: d.loc,
-            count:
-              d.confirmedCasesIndian + d.confirmedCasesForeign - d.discharged,
-            stateData: d
-          })),
+        tileList: indiaData.regional.filter(d => !!(d.confirmedCasesIndian + d.confirmedCasesForeign))
+                                    .map(d => ({state: d.loc, count: (d.confirmedCasesIndian + d.confirmedCasesForeign) - d.discharged, stateData: d})),
         total: indiaData.summary.total - indiaData.summary.discharged,
-        styleClasses: ["case-total", "active-case"]
+        styleClasses: ["case-total", "active-case"] 
       },
       all: {
-        tileList: indiaData.regional.map(d => ({
-          state: d.loc,
-          count: d.confirmedCasesIndian + d.confirmedCasesForeign,
-          stateData: d
-        })),
+        tileList: indiaData.regional.map(d => ({ state: d.loc, count: d.confirmedCasesIndian + d.confirmedCasesForeign, stateData: d})),
         total: indiaData.summary.total,
-        styleClasses: ["total-confirmed-cases"]
+        styleClasses: ["total-confirmed-cases"] 
+
       }
     };
     setIndianStatsByType(statsByType);
-  }, [indiaData]);
+  }, [indiaData])
 
   const handleCaseTypeClick = caseType => setSelectedType(caseType);
   return (
@@ -101,16 +84,11 @@ export default function IndiaData(props) {
                 <span className="slider round"></span>
               </label>
             </div>
-            <DetailedTile
-              locationData={indiaData.summary}
-              handleCaseTypeClick={handleCaseTypeClick}
-            />
+ <DetailedTile locationData={indiaData.summary} handleCaseTypeClick={handleCaseTypeClick}/>
             <List component="nav">
               <ListItem button>
                 <ListItemText primary="India" />
-                <ListItemSecondaryAction
-                  className={cx(indianStatsByType[selectedType].styleClasses)}
-                >
+                <ListItemSecondaryAction className={cx(indianStatsByType[selectedType].styleClasses)}>
                   {indianStatsByType[selectedType].total}{" "}
                 </ListItemSecondaryAction>
               </ListItem>

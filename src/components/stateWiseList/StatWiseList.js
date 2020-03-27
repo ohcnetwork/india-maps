@@ -31,7 +31,7 @@ export default function StateWiseList(props) {
                   onClick={event => handleListItemClick(stateData.stateData, i)}
                   selected={selectedIndex === i}
                 >
-                  <ListItemText
+<ListItemText
                     key={stateData.state}
                     primary={stateData.state}
                     className={cx("state-list-name")}

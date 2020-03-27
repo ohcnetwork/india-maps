@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames/bind";
 const cx = classNames.bind(require("./detailedTile.module.css"));
 export default function DetailedTile(props) {
-  const { locationData = {}, handleCaseTypeClick = () => {} } = props;
+const { locationData = {}, handleCaseTypeClick = ()=>{} } = props;
   return (
     <>
       <section>
@@ -10,7 +10,7 @@ export default function DetailedTile(props) {
           <div className={cx("title")} title="Total Confirmed Cases">
             Total Confirmed Cases
           </div>
-          <div
+<div
             className={cx("confirmed")}
             onClick={() => handleCaseTypeClick("all")}
           >
@@ -22,10 +22,7 @@ export default function DetailedTile(props) {
               style={{ background: "rgb(244, 195, 99)" }}
             ></div>
             <div className={cx("description")}>Active cases</div>
-            <div
-              className={`${cx(["total", "active-case"])} `}
-              onClick={() => handleCaseTypeClick("active")}
-            >
+<div className={`${cx(["total", "active-case"])} `} onClick={() => handleCaseTypeClick('active')}>
               {locationData.total - locationData.discharged || 0}
             </div>
             <div
@@ -33,10 +30,7 @@ export default function DetailedTile(props) {
               style={{ background: "#108d90" }}
             ></div>
             <div className={cx("description")}>Recovered cases</div>
-            <div
-              className={`${cx(["total", "recovered-case"])}`}
-              onClick={() => handleCaseTypeClick("recovered")}
-            >
+<div className={`${cx(["total", "recovered-case"])}`} onClick={() => handleCaseTypeClick('recovered')}>
               {locationData.discharged || 0}
             </div>
             <div
@@ -44,10 +38,7 @@ export default function DetailedTile(props) {
               style={{ background: "#d14f69" }}
             ></div>
             <div className={cx("description")}>Deaths</div>
-            <div
-              className={`${cx(["total", "death-case"])}`}
-              onClick={() => handleCaseTypeClick("death")}
-            >
+<div className={`${cx(["total", "death-case"])}`} onClick={() => handleCaseTypeClick('death')}>
               {locationData.deaths || 0}
             </div>
           </div>
