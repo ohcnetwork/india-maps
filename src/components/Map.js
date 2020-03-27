@@ -220,7 +220,7 @@ export default function MapContainer(props) {
   console.log(viewTestCenters);
 
   const findRadius = cases => {
-    return (Math.sqrt(cases*20000000))
+    return (Math.cbrt(cases))*15000
   }
   return (
     <div className={"map-container"}>
