@@ -55,6 +55,10 @@ code {
   align-items: center;
 }
 
+.list-content {
+  margin-right: 20px;
+}
+
 /* Switch CSS begins here */
 
 .switch {
