@@ -219,6 +219,9 @@ export default function MapContainer(props) {
   }, []);
   console.log(viewTestCenters);
 
+  const findRadius = cases => {
+    return 15000 + 2000*Math.sqrt(cases*5)
+  }
   return (
     <div className={"map-container"}>
       <Map center={center} zoom={7}>
@@ -243,7 +246,7 @@ export default function MapContainer(props) {
                   fillColor="#d14f69"
                   fillOpacity={0.6}
                   stroke={false}
-                  radius={15000 + locationData.cases * 2500}
+                  radius={15000 + findRadius(locationData.cases)}
                   onMouseOver={e => {
                     firstLoad && setFirstLoad(false);
                     e.target.openPopup();
@@ -293,10 +296,7 @@ export default function MapContainer(props) {
                   fillOpacity={0.6}
                   stroke={false}
                   radius={
-                    15000 +
-                    (locationData.confirmedCasesIndian +
-                      locationData.confirmedCasesForeign) *
-                      2500
+                    15000 + findRadius(locationData.confirmedCasesIndian + locationData.confirmedCasesForeign)
                   }
                   onMouseOver={e => {
                     firstLoad && setFirstLoad(false);
@@ -345,7 +345,7 @@ export default function MapContainer(props) {
                 fillColor="#d14f69"
                 fillOpacity={0.6}
                 stroke={false}
-                radius={15000 + locationData.corona_positive * 2500}
+                radius={15000 + findRadius(locationData.corona_positive)}
                 onMouseOver={e => {
                   firstLoad && setFirstLoad(false);
                   e.target.openPopup();
@@ -417,7 +417,7 @@ export default function MapContainer(props) {
               fillColor="#d14f69"
               fillOpacity={0.6}
               stroke={false}
-              radius={15000 + location.confirmed * 20}
+              radius={15000 + findRadius(location.confirmed)}
               onMouseOver={e => {
                 e.target.openPopup();
               }}
