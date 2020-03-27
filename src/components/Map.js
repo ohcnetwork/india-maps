@@ -42,7 +42,7 @@ const groupMetricsByStateAndCountry = (data) => {
     }, {})
     : {};
   return Object.keys(internationalDataLookup).map(key => internationalDataLookup[key]);
-} 
+}
 const PopupLineItem = ({ type, count, legend }) => {
   return (
     <>
@@ -236,7 +236,7 @@ export default function MapContainer(props) {
                   key={location.state}
                   center={[location.latitude, location.longitude]}
                   fillColor="red"
-                  radius={15000 + locationData.cases * 2500}
+                  radius={15000 + locationData.cases * 2000}
                   onMouseOver={e => {
                     firstLoad && setFirstLoad(false);
                     e.target.openPopup();
@@ -334,7 +334,7 @@ export default function MapContainer(props) {
                 key={location.district}
                 center={[location.latitude, location.longitude]}
                 fillColor="red"
-                radius={15000 + locationData.corona_positive * 2500}
+                radius={15000 + locationData.corona_positive * 2000}
                 onMouseOver={e => {
                   firstLoad && setFirstLoad(false);
                   e.target.openPopup();
