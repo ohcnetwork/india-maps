@@ -22,13 +22,40 @@ const papaparseOptions = {
   transformHeader: header => header.toLowerCase().replace(/\W/g, "_")
 };
 
+// to aggregate data by state+country and sum up metrics
+const groupMetricsByStateAndCountry = data => {
+  const internationalDataLookup = Array.isArray(data)
+    ? data.reduce((intLookup, data) => {
+        const key = `${data.province_state}.${data.country_region}`;
+        if (intLookup[key]) {
+          intLookup[key] = {
+            ...intLookup[key],
+            deaths: intLookup[key].deaths + data.deaths,
+            confirmed: intLookup[key].confirmed + data.confirmed,
+            recovered: intLookup[key].recovered + data.recovered,
+            active: intLookup[key].active + data.active
+          };
+          return intLookup;
+        }
+        intLookup[key] = data;
+        return intLookup;
+      }, {})
+    : {};
+  return Object.keys(internationalDataLookup).map(
+    key => internationalDataLookup[key]
+  );
+};
 const PopupLineItem = ({ type, count, legend }) => {
   return (
     <>
       <div className={cx(["popup-legend", "legend-" + legend])}></div>
       <div className={cx("count-type")}>{type}</div>
       <div className={cx("counts")}>
-        {count.toLocaleString(navigator.language, { maximumFractionDigits: 2 })}
+        {count !== undefined && count !== null
+          ? count.toLocaleString(navigator.language, {
+              maximumFractionDigits: 2
+            })
+          : ""}
       </div>
     </>
   );
@@ -55,7 +82,7 @@ export default function MapContainer(props) {
 
   const [districtData, setDistrictData] = useState(null);
 
-  const [internationalData, setInternationalData] = useState(null);
+  const [internationalData, setInternationalData] = useState([]);
   const [countryStats, setCountryStats] = useState(null);
   const [worldStats, setWorldStats] = useState(null);
 
@@ -63,17 +90,16 @@ export default function MapContainer(props) {
   const [showInfoHead, setShowInfoHead] = useState(true);
   const [firstLoad, setFirstLoad] = useState(true);
 
-  const parseInternationalData = data => {
-    // console.log("Setting International Data");
-    // console.log("International Data:" + JSON.stringify(data.data))
-    setInternationalData(data.data);
-    setWorldStats(
-      data.data.reduce((a, b) => ({
-        confirmed: a.confirmed + b.confirmed,
-        deaths: a.deaths + b.deaths,
-        recovered: a.recovered + b.recovered
-      }))
-    );
+  const parseInternationalData = ({ data }) => {
+    setInternationalData(groupMetricsByStateAndCountry(data));
+    Array.isArray(data) &&
+      setWorldStats(
+        data.reduce((a, b) => ({
+          confirmed: a.confirmed + b.confirmed,
+          deaths: a.deaths + b.deaths,
+          recovered: a.recovered + b.recovered
+        }))
+      );
   };
   useEffect(() => {
     if (countrySummary)
@@ -142,6 +168,7 @@ export default function MapContainer(props) {
               )
             )
           );
+
           setCountrySummary(result.data.summary);
         },
         error => {
@@ -215,7 +242,9 @@ export default function MapContainer(props) {
                 <Circle
                   key={location.state}
                   center={[location.latitude, location.longitude]}
-                  fillColor="red"
+                  fillColor="#d14f69"
+                  fillOpacity={0.6}
+                  stroke={false}
                   radius={15000 + locationData.cases * 2500}
                   onMouseOver={e => {
                     firstLoad && setFirstLoad(false);
@@ -262,7 +291,9 @@ export default function MapContainer(props) {
                 <Circle
                   key={location.state}
                   center={[location.latitude, location.longitude]}
-                  fillColor="red"
+                  fillColor="#d14f69"
+                  fillOpacity={0.6}
+                  stroke={false}
                   radius={
                     15000 +
                     (locationData.confirmedCasesIndian +
@@ -313,7 +344,9 @@ export default function MapContainer(props) {
               <Circle
                 key={location.district}
                 center={[location.latitude, location.longitude]}
-                fillColor="red"
+                fillColor="#d14f69"
+                fillOpacity={0.6}
+                stroke={false}
                 radius={15000 + locationData.corona_positive * 2500}
                 onMouseOver={e => {
                   firstLoad && setFirstLoad(false);
@@ -370,62 +403,63 @@ export default function MapContainer(props) {
               </Circle>
             );
           })}
-        {/* {Array.isArray(internationalData) &&
-          internationalData.map(location => {
-            if (location.country_region === "India") {
-              if (countryStats === null) setCountryStats(location);
-              return null;
-            }
-            return (
-              <Circle
-                key={
-                  location.province_state
-                    ? location.province_state + "." + location.country_region
-                    : location.country_region
-                }
-                center={[location.latitude, location.longitude]}
-                fillColor="red"
-                radius={15000 + location.confirmed * 20}
-                onMouseOver={e => {
-                  e.target.openPopup();
-                }}
-              >
-                <Popup>
-                  <h3>
-                    {location.province_state
-                      ? location.province_state
-                      : location.country_region}
-                  </h3>
-                  {location.province_state && (
-                    <span>
-                      {location.country_region}
-                      <br />
-                    </span>
-                  )}
-                  <div className={cx("popup-line-wrap")}>
-                    <PopupLineItem
-                      legend="cases"
-                      type="Cases"
-                      count={location.confirmed}
-                    />
-                    <PopupLineItem
-                      legend="cured"
-                      type="Cured/Discharged"
-                      count={location.recovered}
-                    />
-                    <PopupLineItem
-                      legend="death"
-                      type="Deaths"
-                      count={location.deaths}
-                    />
-                  </div>
-                  <hr />
-                  Last Update: {location.last_update}
-                  <br />
-                </Popup>
-              </Circle>
-            );
-          })} */}
+        {internationalData.map((location, index) => {
+          if (location.country_region === "India") {
+            if (countryStats === null) setCountryStats(location);
+            return null;
+          }
+          return (
+            <Circle
+              key={
+                location.province_state
+                  ? location.province_state + "." + location.country_region
+                  : location.country_region
+              }
+              center={[location.lat, location.long_]}
+              fillColor="#d14f69"
+              fillOpacity={0.6}
+              stroke={false}
+              radius={15000 + location.confirmed * 20}
+              onMouseOver={e => {
+                e.target.openPopup();
+              }}
+            >
+              <Popup>
+                <h3>
+                  {location.province_state
+                    ? location.province_state
+                    : location.country_region}
+                </h3>
+                {location.province_state && (
+                  <span>
+                    {location.country_region}
+                    <br />
+                  </span>
+                )}
+                <div className={cx("popup-line-wrap")}>
+                  <PopupLineItem
+                    legend="cases"
+                    type="Cases"
+                    count={location.confirmed}
+                  />
+                  <PopupLineItem
+                    legend="cured"
+                    type="Cured/Discharged"
+                    count={location.recovered}
+                  />
+                  <PopupLineItem
+                    legend="death"
+                    type="Deaths"
+                    count={location.deaths}
+                  />
+                </div>
+                <hr />
+                Last Update: {location.last_update}
+                <br />
+              </Popup>
+            </Circle>
+          );
+        })}
         {viewTestCenters &&
           testCenters.map(testCenter => {
             return (

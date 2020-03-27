@@ -19,22 +19,25 @@ export default function StateWiseList(props) {
         {stateWiseData && stateWiseData.length > 0 && (
           <List
             component="nav"
-            aria-label="secondary mailbox folders"
+            aria-label="state list"
             className={cx("state-list")}
           >
             {stateWiseData.map((stateData, i) => {
               return (
                 <ListItem
                   button
-                  key={stateData.loc}
+                  key={stateData.state}
                   className={cx("item-list")}
-                  onClick={event => handleListItemClick(stateData, i)}
+                  onClick={event => handleListItemClick(stateData.stateData, i)}
                   selected={selectedIndex === i}
                 >
-                  <ListItemText key={stateData.loc} primary={stateData.loc} />
+                  <ListItemText
+                    key={stateData.state}
+                    primary={stateData.state}
+                    className={cx("state-list-name")}
+                  />
                   <ListItemSecondaryAction>
-                    {stateData.confirmedCasesIndian +
-                      stateData.confirmedCasesForeign}
+                    {stateData.count}
                   </ListItemSecondaryAction>
                 </ListItem>
               );

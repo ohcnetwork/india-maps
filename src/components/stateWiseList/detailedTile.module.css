@@ -16,9 +16,10 @@
 }
 .confirmed {
   font-size: 32px;
-  color: #de3700;
+  color: #d14f69;
   font-weight: bold;
   line-height: 40px;
+  cursor: pointer;
 }
 .legend {
   display: grid;
@@ -34,26 +35,28 @@
   height: 8px;
 }
 .total {
-  color: #767676;
+  color: #fff;
   text-align: right;
+  padding: 0 10px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
+.description {
+  font-weight: 600;
+}
 .active-case {
-  padding: 0 10px;
-  background-color: rgb(244, 195, 99);
-  color: #fff;
-  border-radius: 4px;
+  background-color: rgba(255, 169, 0, 0.2);
+  color: #ffa900;
+  font-weight: 700;
 }
-
 .recovered-case {
-  padding: 0 10px;
-  background-color: green;
-  color: #fff;
-  border-radius: 4px;
+  background-color: rgba(129, 255, 202, 0.3);
+  color: #108d90;
+  font-weight: 700;
 }
 .death-case {
-  padding: 0 10px;
-  background-color: red;
-  color: #fff;
-  border-radius: 4px;
+  background-color: rgba(209, 79, 105, 0.2);
+  color: #d14f69;
+  font-weight: 700;
 }

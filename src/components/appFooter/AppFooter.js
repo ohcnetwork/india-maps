@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames/bind";
 const cx = classNames.bind(require("./appFooter.module.css"));
-const AppHeader = props => {
+const AppFooter = props => {
   const { news } = props;
   return (
     <div className={cx("footer-container")}>
@@ -26,4 +26,4 @@ const AppHeader = props => {
     </div>
   );
 };
-export default AppHeader;
+export default AppFooter;
