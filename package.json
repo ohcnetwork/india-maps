@@ -3,11 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.9.7",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "chart.js": "^2.9.3",
     "leaflet": "^1.6.0",
     "react": "^16.13.0",
+    "react-chartjs-2": "^2.9.0",
     "react-dom": "^16.13.0",
     "react-leaflet": "^2.6.3",
     "react-papaparse": "^3.0.0",
@@ -33,5 +36,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.10",
+    "classnames": "^2.2.6"
   }
 }

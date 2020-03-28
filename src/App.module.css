@@ -1,0 +1,60 @@
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+.app-container {
+  display: flex;
+  height: 100vh;
+}
+.left-panel {
+  flex: 4;
+  display: flex;
+  flex-direction: column;
+}
+@media screen and (max-width: 767px) {
+  .left-panel {
+    height: 50%;
+  }
+}
+.tracker-list-container {
+  display: flex;
+  height: calc(100vh - 130px);
+}
+.list-wrapper {
+  flex: 2;
+  padding: 0 10px 0 20px;
+  height: auto;
+}
+.new-wrapper {
+  background-color: #efefef;
+  flex: 2;
+  padding: 0 10px 0 20px;
+  height: auto;
+}
+.map-wrapper {
+  flex: 10;
+  height: auto;
+}
+
+.line-chart {
+  position: absolute;
+  right: 0px;
+  background: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.75) 0px 0px 31px -13px;
+  padding: 15px;
+}
+
+@media screen and (max-width: 767px) {
+  .app-container {
+    flex-direction: column-reverse;
+  }
+  .map-wrapper {
+    height: 80vh;
+  }
+  .tracker-list-container {
+    height: calc(35vh - 80px);
+  }
+  .line-chart {
+    display: none;
+  }
+}

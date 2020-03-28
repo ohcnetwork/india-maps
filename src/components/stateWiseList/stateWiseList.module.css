@@ -1,0 +1,42 @@
+.list-wrapper {
+  height: 100%;
+  overflow-y: auto;
+}
+.state-list li {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 20px;
+  /* padding: 10px 16px; */
+}
+.state-list li:not(:last-child) {
+  margin-bottom: 12px;
+}
+
+.case-total {
+  color: #fff;
+  text-align: right;
+  font-weight: bold;
+  padding: 3px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  min-width: 49px;
+}
+.total-confirmed-cases {
+    color: #de3700;
+    font-weight: bold;
+    line-height: 40px;
+    text-align: right;
+    padding-right: 10px;
+}
+.active-case {
+  background-color: rgb(244, 195, 99);
+}
+.recovered-case {
+  background-color: green;
+}
+.death-case {
+  background-color: red;
+}
