@@ -1,7 +1,12 @@
 .list-wrapper {
   height: 100%;
+  /* overflow: hidden; */
   overflow-y: auto;
 }
+
+/* .list-wrapper:hover {
+  overflow-y: auto;
+} */
 
 .state-list-name span {
   font-size: 14px;
@@ -60,4 +65,11 @@
 
 .death-case {
   background-color: #d14f69;
+}
+
+@media screen and (max-width: 767px) {
+  .state-name {
+    font-size: 20px;
+    margin: 20px 0 0 0;
+  }
 }

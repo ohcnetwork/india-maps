@@ -96,7 +96,7 @@ class Chart extends Component {
       ]
     };
     return (
-      <Bar ref={this.chartReference} data={data} height={150} width={150} />
+      <Bar ref={this.chartReference} data={data} height={100} width={100} />
     );
   }
 }

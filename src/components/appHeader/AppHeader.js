@@ -7,7 +7,7 @@ const AppHeader = props => {
   return (
     <>
       <AppBar
-        position="static"
+        position="relative"
         className={cx("app-header")}
         color="primary"
         style={{ backgroundColor: "#efefef" }}

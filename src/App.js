@@ -26,7 +26,8 @@ class App extends Component {
       dimensions: {
         height: window.innerHeight,
         width: window.innerWidth
-      }
+      },
+      showLeftNav: true
     };
   }
 
@@ -78,6 +79,12 @@ class App extends Component {
     });
   };
 
+  toggleLeftNav = value => {
+    this.setState({
+      showLeftNav: !this.state.showLeftNav
+    });
+  };
+
   componentDidMount = _ => {
     window.addEventListener("resize", this.handleResize);
   };
@@ -100,7 +107,22 @@ class App extends Component {
       <>
         <section className={cx("app-wrapper")}>
           <section className={cx("app-container")}>
-            <div className={cx("left-panel")}>
+            <div className={cx("map-wrapper")}>
+              <Map
+                onStateWiseDataGetSuccess={this.handleStateWiseDataSuccess}
+                onDistrictWiseDataGetSuccess={
+                  this.handleDistrictWiseDataSuccess
+                }
+                viewTestCenters={showTestCenters}
+                selectedLocCoordinate={selectedLocCoordinate}
+              />
+            </div>
+
+            <div
+              className={`${cx("left-panel")} ${
+                this.state.showLeftNav ? "show" : cx("hide")
+              }`}
+            >
               <AppHeader />
               <div className={cx("tracker-list-container")}>
                 <div className={cx("list-wrapper")}>
@@ -112,34 +134,47 @@ class App extends Component {
                   />
                 </div>
                 {dimensions.width > this.mobileWindowSizeBreakPoint && (
-                  <div className={cx("new-wrapper")}>
-                    <SelectedLocationData
-                      locationData={{
-                        ...selectedLocationData,
-                        loc: newsSearchKeyword
-                      }}
-                    />
-                  </div>
+                  <>
+                    <div className={cx("new-wrapper")}>
+                      <SelectedLocationData
+                        locationData={{
+                          ...selectedLocationData,
+                          loc: newsSearchKeyword
+                        }}
+                      />
+                    </div>
+                    <span
+                      className={cx("toggle-button")}
+                      onClick={this.toggleLeftNav}
+                    >
+                      {this.state.showLeftNav ? "Close" : "Open"}
+                    </span>
+                  </>
                 )}
                 {dimensions.width <= this.mobileWindowSizeBreakPoint && (
                   <Dialog
                     onClose={this.handleClose}
                     open={selectedLocationDataDisplay}
+                    fullWidth={true}
+                    className={`${cx("customized-dialog-wrapper")}`}
                   >
-                    <DialogTitle
+                    {/* <DialogTitle
                       id="customized-dialog-title"
                       onClose={this.handleClose}
+                      className="customized-dialog-title"
                     >
-                      {selectedLocationData.loc}
-                      <IconButton
-                        aria-label="close"
-                        onClick={this.handleClose}
-                        style={{ float: "right" }}
-                      >
-                        X
-                      </IconButton>
-                    </DialogTitle>
-                    <div className={cx("new-wrapper")}>
+                      
+                    </DialogTitle> */}
+                    {/* {selectedLocationData.loc} */}
+                    <IconButton
+                      aria-label="close"
+                      onClick={this.handleClose}
+                      style={{ float: "right" }}
+                      className={`${cx("close-button")}`}
+                    >
+                      X
+                    </IconButton>
+                    <div className={`${cx("new-wrapper")} ${cx("test")}`}>
                       <SelectedLocationData
                         locationData={{
                           ...selectedLocationData,
@@ -151,17 +186,6 @@ class App extends Component {
                 )}
               </div>
               <AppFooter></AppFooter>
-            </div>
-
-            <div className={cx("map-wrapper")}>
-              <Map
-                onStateWiseDataGetSuccess={this.handleStateWiseDataSuccess}
-                onDistrictWiseDataGetSuccess={
-                  this.handleDistrictWiseDataSuccess
-                }
-                viewTestCenters={showTestCenters}
-                selectedLocCoordinate={selectedLocCoordinate}
-              />
             </div>
           </section>
         </section>

@@ -1,12 +1,8 @@
 .infoTile {
   padding-right: 30px;
-  width: 240px;
+  /* width: 240px; */
 }
-@media screen and (max-width: 767px) {
-  .infoTile {
-    width: 100%;
-  }
-}
+
 .title {
   color: #767676;
   font-weight: bold;
@@ -37,6 +33,7 @@
   width: 8px;
   height: 8px;
 }
+
 .total {
   color: #fff;
   text-align: right;
@@ -65,4 +62,20 @@
   background-color: rgba(209, 79, 105, 0.2);
   color: #d14f69;
   font-weight: 700;
+}
+
+@media screen and (max-width: 767px) {
+  .infoTile {
+    width: 100%;
+  }
+  .title {
+    display: inline-block;
+    /* margin: 0 50px 0 0; */
+    width: 65%;
+  }
+  .confirmed {
+    display: inline-block;
+    width: 30%;
+    text-align: right;
+  }
 }

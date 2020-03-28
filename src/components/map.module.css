@@ -6,29 +6,37 @@
   grid-row-gap: 2px;
   width: 100%;
 }
+
 .counts {
   text-align: right;
 }
+
 .popup-legend {
   width: 8px;
   height: 8px;
   margin-top: 4px;
 }
+
 .legend-cases {
-  background: rgb(244, 195, 99);
+  background: #ffa900;
 }
+
 .legend-cured {
-  background: rgb(96, 187, 105);
+  background: #108d90;
 }
+
 .legend-death {
-  background: rgb(222, 55, 0);
+  background: #d14f69;
 }
+
 .legend-home-isolation {
   background: gray;
 }
+
 .legend-observation {
   background: rgb(105, 103, 193);
 }
+
 .legend-hospitalized {
   background: #ca7575;
 }

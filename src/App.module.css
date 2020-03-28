@@ -9,15 +9,13 @@
 }
 
 .left-panel {
-  flex: 4;
+  /* flex: 4;
   display: flex;
-  flex-direction: column;
-}
+  flex-direction: column; */
 
-@media screen and (max-width: 767px) {
-  .left-panel {
-    height: 50%;
-  }
+  position: absolute;
+  width: 600px;
+  background: #fff;
 }
 
 .tracker-list-container {
@@ -51,7 +49,31 @@
   padding: 15px;
 }
 
+.toggle-button {
+  position: absolute;
+  right: -50px;
+  background: #000;
+  color: #fff;
+  padding: 10px;
+  transform: rotate(90deg);
+  transform-origin: center;
+  cursor: pointer;
+}
+
+.hide {
+  transform: translateX(-100%);
+}
+
+.show {
+  transform: translateX(100%);
+}
+
 @media screen and (max-width: 767px) {
+  .left-panel {
+    height: 34%;
+    width: 100%;
+  }
+
   .app-container {
     flex-direction: column-reverse;
   }
@@ -66,5 +88,10 @@
 
   .line-chart {
     display: none;
+  }
+
+  .close-button {
+    position: absolute !important;
+    right: 0;
   }
 }
