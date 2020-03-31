@@ -11,12 +11,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
 * {
   box-sizing: border-box;
 }
+
 .map-container {
   height: 100%;
 }
+
 .leaflet-container {
   z-index: 0;
   height: 100%;
@@ -30,18 +33,21 @@ code {
   right: 15px;
   padding: 20px;
   max-width: 40vw;
-  zindex: 100;
+  z-index: 100;
 }
+
 @media screen and (min-width: 400px) {
   .information-head {
     font-size: 0.6em;
   }
 }
+
 @media screen and (min-width: 800px) {
   .information-head {
     font-size: 0.75em;
   }
 }
+
 @media screen and (min-width: 1200px) {
   .information-head {
     font-size: 1em;
@@ -60,7 +66,6 @@ code {
 }
 
 /* Switch CSS begins here */
-
 .switch {
   position: relative;
   display: inline-block;
@@ -123,11 +128,9 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
-
 /* Switch CSS ends here */
 
 /* Button CSS starts */
-
 a.button3 {
   display: inline-block;
   padding: 0.3em 1.2em;
@@ -142,14 +145,36 @@ a.button3 {
   text-align: center;
   transition: all 0.2s;
 }
+
 a.button3:hover {
   background-color: #4095c6;
 }
+
 @media screen and (max-width: 30em) {
   a.button3 {
       display: block;
       margin: 0.2em auto;
   }
 }
-
 /* Button CSS ends */
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  cursor: pointer;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #108d90;
+}
