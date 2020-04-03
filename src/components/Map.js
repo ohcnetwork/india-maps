@@ -26,7 +26,7 @@ const papaparseOptions = {
 const groupMetricsByStateAndCountry = (data) => {
   const internationalDataLookup = Array.isArray(data)
     ? data
-    .filter(data => data.lat && data.long_)
+    .filter((data) => data.lat && data.long_)
     .reduce((intLookup, data) => {
       const key = `${data.province_state}.${data.country_region}`;
       if (intLookup[key]) {
@@ -207,7 +207,6 @@ export default function MapContainer(props) {
       (date.getDate() > 9 ? date.getDate() : "0" + date.getDate()) +
       "-" +
       date.getFullYear();
-    console.log(formattedDate);
     readRemoteFile(
       "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" +
       formattedDate +
