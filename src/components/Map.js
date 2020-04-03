@@ -91,7 +91,6 @@ export default function MapContainer(props) {
   const [firstLoad, setFirstLoad] = useState(true);
 
   const parseInternationalData = ({ data }) => {
-    console.log('parseInternationalData', data);
     setInternationalData(groupMetricsByStateAndCountry(data));
     Array.isArray(data) &&
       setWorldStats(
@@ -310,7 +309,7 @@ export default function MapContainer(props) {
                 {
                   (locationData.discharged) ?
                     <Circle
-                      key={location.state}
+                      key={`discharged-${location.state}`}
                       center={[location.latitude, location.longitude]}
                       fillColor="#1df500"
                       fillOpacity={0.7}
@@ -325,7 +324,7 @@ export default function MapContainer(props) {
                 {
                   (locationData.deaths) ?
                     <Circle
-                      key={location.state}
+                      key={`deaths-${location.state}`}
                       center={[location.latitude, location.longitude]}
                       fillColor="#f55600"
                       fillOpacity={0.9}
@@ -390,7 +389,7 @@ export default function MapContainer(props) {
                 {
                   (locationData.total_hospitalised) ?
                     <Circle
-                      key={location.district !== 0}
+                      key={`hospitilized-${location.district}`}
                       center={[location.latitude, location.longitude]}
                       fillColor="#04dbd4"
                       fillOpacity={0.8}
@@ -405,7 +404,7 @@ export default function MapContainer(props) {
                 {
                   (locationData.cured_discharged) ?
                     <Circle
-                      key={location.district !== 0}
+                      key={`cured-${location.district}`}
                       center={[location.latitude, location.longitude]}
                       fillColor="#1df500"
                       fillOpacity={0.7}
@@ -420,7 +419,7 @@ export default function MapContainer(props) {
                 {
                   (locationData.deaths) ?
                     <Circle
-                      key={location.district !== 0}
+                      key={`deaths-${location.district}`}
                       center={[location.latitude, location.longitude]}
                       fillColor="#f55600"
                       fillOpacity={0.9}
@@ -507,8 +506,8 @@ export default function MapContainer(props) {
                 (location.recovered) ?
                   <Circle
                     key={location.province_state
-                      ? location.province_state + "." + location.country_region
-                      : location.country_region}
+                      ? "recovered-"+location.province_state + "." + location.country_region
+                      : "recovered-"+location.country_region}
                     center={[location.lat, location.long_]}
                     fillColor="#1df500"
                     fillOpacity={0.7}
@@ -524,8 +523,8 @@ export default function MapContainer(props) {
                 (location.deaths) ?
                   <Circle
                     key={location.province_state
-                      ? location.province_state + "." + location.country_region
-                      : location.country_region}
+                      ? "deaths-" +location.province_state + "." + location.country_region
+                      : "deaths-" +location.country_region}
                     center={[location.lat, location.long_]}
                     fillColor="#f55600"
                     fillOpacity={0.8}
