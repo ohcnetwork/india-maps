@@ -25,7 +25,9 @@ const papaparseOptions = {
 // to aggregate data by state+country and sum up metrics
 const groupMetricsByStateAndCountry = (data) => {
   const internationalDataLookup = Array.isArray(data)
-    ? data.reduce((intLookup, data) => {
+    ? data
+    .filter(data => data.lat && data.long_)
+    .reduce((intLookup, data) => {
       const key = `${data.province_state}.${data.country_region}`;
       if (intLookup[key]) {
         intLookup[key] = {
@@ -89,6 +91,7 @@ export default function MapContainer(props) {
   const [firstLoad, setFirstLoad] = useState(true);
 
   const parseInternationalData = ({ data }) => {
+    console.log('parseInternationalData', data);
     setInternationalData(groupMetricsByStateAndCountry(data));
     Array.isArray(data) &&
       setWorldStats(
@@ -205,17 +208,17 @@ export default function MapContainer(props) {
       (date.getDate() > 9 ? date.getDate() : "0" + date.getDate()) +
       "-" +
       date.getFullYear();
-    // console.log(formattedDate);
-    // readRemoteFile(
-    //   "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" +
-    //   formattedDate +
-    //   ".csv",
-    //   {
-    //     ...papaparseOptions,
-    //     complete: parseInternationalData,
-    //     error: () => tryYesterday(date)
-    //   }
-    // );
+    console.log(formattedDate);
+    readRemoteFile(
+      "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" +
+      formattedDate +
+      ".csv",
+      {
+        ...papaparseOptions,
+        complete: parseInternationalData,
+        error: () => tryYesterday(date)
+      }
+    );
   }, []);
   console.log(viewTestCenters);
 
