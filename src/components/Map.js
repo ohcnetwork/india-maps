@@ -206,16 +206,16 @@ export default function MapContainer(props) {
       "-" +
       date.getFullYear();
     // console.log(formattedDate);
-    readRemoteFile(
-      "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" +
-      formattedDate +
-      ".csv",
-      {
-        ...papaparseOptions,
-        complete: parseInternationalData,
-        error: () => tryYesterday(date)
-      }
-    );
+    // readRemoteFile(
+    //   "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" +
+    //   formattedDate +
+    //   ".csv",
+    //   {
+    //     ...papaparseOptions,
+    //     complete: parseInternationalData,
+    //     error: () => tryYesterday(date)
+    //   }
+    // );
   }, []);
   console.log(viewTestCenters);
 
@@ -303,7 +303,7 @@ export default function MapContainer(props) {
                   e.target.openPopup();
                 }}
               >
-                
+
                 {
                   (locationData.discharged) ?
                     <Circle
@@ -382,7 +382,7 @@ export default function MapContainer(props) {
                   e.target.openPopup();
                 }}
               >
-                
+
 
                 {
                   (locationData.total_hospitalised) ?
@@ -398,7 +398,7 @@ export default function MapContainer(props) {
                         e.target.openPopup();
                       }}
                     ></Circle> : null
-                } 
+                }
                 {
                   (locationData.cured_discharged) ?
                     <Circle
