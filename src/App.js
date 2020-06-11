@@ -72,16 +72,9 @@ function App(){
                       </div>
                     </div>
                     <div className="ml-3">
-                      <p className="text-sm leading-5 font-medium text-white">
-                        {"loginUser"}
+                      <p className="text-xs leading-4 font-medium text-green-300 group-hover:text-green-100 transition ease-in-out duration-150">
+                        Attribution
                       </p>
-                      <p onClick={() => {
-                        localStorage.removeItem("care_access_token");
-                        localStorage.removeItem("care_refresh_token");
-                        window.location.reload();
-                      }} className="text-xs leading-4 font-medium text-green-300 group-hover:text-green-100 transition ease-in-out duration-150">
-                        Sign Out
-                  </p>
                     </div>
                   </div>
                 </a>
@@ -125,11 +118,8 @@ function App(){
                 <div>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm leading-5 font-medium text-gray-900">
-                    {"loginUser"}
-                  </p>
                   <p className="text-xs leading-4 font-medium text-gray-900 group-hover:text-green-100 transition ease-in-out duration-150">
-                    Sign Out
+                    Attribution
                   </p>
                 </div>
               </div>
