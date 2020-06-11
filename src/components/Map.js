@@ -11,8 +11,6 @@ import { readRemoteFile } from "react-papaparse";
 import geoLocation from "../data/geoLocation.js";
 import districtGeoLocation from "../data/districtGeoLocation.js";
 import testCenters from "../data/testCenters.js";
-import classNames from "classnames/bind";
-const cx = classNames.bind(require("./map.module.css"));
 
 let center = [9.5915668, 76.5221531];
 const papaparseOptions = {
@@ -45,21 +43,6 @@ const groupMetricsByStateAndCountry = (data) => {
     : {};
   return Object.keys(internationalDataLookup).map(key => internationalDataLookup[key]);
 }
-const PopupLineItem = ({ type, count, legend }) => {
-  return (
-    <>
-      <div className={cx(["popup-legend", "legend-" + legend])}></div>
-      <div className={cx("count-type")}>{type}</div>
-      <div className={cx("counts")}>
-        {count !== undefined && count !== null
-          ? count.toLocaleString(navigator.language, {
-            maximumFractionDigits: 2
-          })
-          : ""}
-      </div>
-    </>
-  );
-};
 
 export default function MapContainer(props) {
   const {
@@ -224,8 +207,13 @@ export default function MapContainer(props) {
     return (Math.cbrt(cases)) * 1500
   }
   return (
-    <div className={"map-container"}>
-      <Map center={center} zoom={7}>
+      <Map 
+        className="h-screen w-full fixed" 
+        center={center} 
+        zoom={7} 
+        minZoom={3} 
+        maxBounds={[[90,-270],[-90,-270],[90,360],[-90,360]]}
+      >
         <TileLayer
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
@@ -255,25 +243,10 @@ export default function MapContainer(props) {
               >
                 <Popup>
                   <h3>{location.state}</h3>
-                  <div className={cx("popup-line-wrap")}>
-                    <PopupLineItem
-                      legend="cases"
-                      type="Cases"
-                      count={locationData.cases}
-                    />
-                    <PopupLineItem
-                      legend="cured"
-                      type="Cured/Discharged"
-                      count={locationData.cured_discharged}
-                    />
-                    <PopupLineItem
-                      legend="death"
-                      type="Deaths"
-                      count={locationData.Deaths}
-                    />
-                    <hr />
+                      Cases: {locationData.cases}
+                      Cured/Discharged: {locationData.cured_discharged}
+                      Deaths: {locationData.Deaths}
                       Helpline: {locationData.helpline}
-                  </div>
                 </Popup>
               </Circle>
             );
@@ -337,26 +310,12 @@ export default function MapContainer(props) {
                 }
                 <Popup>
                   <h3>{location.state}</h3>
-                  <div className={cx("popup-line-wrap")}>
-                    <PopupLineItem
-                      legend="cases"
-                      type="Cases"
-                      count={
+                      Cases: {
                         locationData.confirmedCasesIndian +
                         locationData.confirmedCasesForeign
                       }
-                    />
-                    <PopupLineItem
-                      legend="cured"
-                      type="Cured/Discharged"
-                      count={locationData.discharged}
-                    />
-                    <PopupLineItem
-                      legend="death"
-                      type="Deaths"
-                      count={locationData.deaths}
-                    />
-                  </div>
+                      Cured/Discharged: {locationData.discharged}
+                      Deaths: {locationData.deaths}
                 </Popup>
               </Circle>
             );
@@ -443,38 +402,12 @@ export default function MapContainer(props) {
                     <h3 style={{ margin: "0px" }}>{location.district}</h3>
                     Kerala
                     <br />
-                    <div className={cx("popup-line-wrap")}>
-                      <PopupLineItem
-                        legend="observation"
-                        type="Observation"
-                        count={locationData.under_observation}
-                      />
-                      <PopupLineItem
-                        legend="hospitalized"
-                        type="Hospitalized"
-                        count={locationData.total_hospitalised}
-                      />
-                      <PopupLineItem
-                        legend="home-isolation"
-                        type="Home Isolation"
-                        count={locationData.under_home_isolation}
-                      />
-                      <PopupLineItem
-                        legend="cases"
-                        type="Cases"
-                        count={locationData.corona_positive}
-                      />
-                      <PopupLineItem
-                        legend="cured"
-                        type="Cured/Discharged"
-                        count={locationData.cured_discharged}
-                      />
-                      <PopupLineItem
-                        legend="death"
-                        type="Deaths"
-                        count={locationData.deaths}
-                      />
-                    </div>
+                    Observation: {locationData.under_observation}
+                    Hospitalized: {locationData.total_hospitalised}
+                    Home Isolation: {locationData.under_home_isolation}
+                    Cases: {locationData.corona_positive}
+                    Cured/Discharged: {locationData.cured_discharged}
+                    Deaths: {locationData.deaths}
                   </Popup>
                 )}
               </Circle>
@@ -547,23 +480,9 @@ export default function MapContainer(props) {
                     <br />
                   </span>
                 )}
-                <div className={cx("popup-line-wrap")}>
-                  <PopupLineItem
-                    legend="cases"
-                    type="Cases"
-                    count={location.confirmed}
-                  />
-                  <PopupLineItem
-                    legend="cured"
-                    type="Cured/Discharged"
-                    count={location.recovered}
-                  />
-                  <PopupLineItem
-                    legend="death"
-                    type="Deaths"
-                    count={location.deaths}
-                  />
-                </div>
+                    Cases: {location.confirmed}
+                    Cured/Discharged: {location.recovered}
+                    Deaths: {location.deaths}
                 <hr />
                 Last Update: {location.last_update}
                 <br />
@@ -600,6 +519,5 @@ export default function MapContainer(props) {
             );
           })}
       </Map>
-    </div>
   );
 }
