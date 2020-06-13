@@ -141,17 +141,17 @@ function App(){
           </a>
         </div>
 
-        <main className="flex-1 relative z-0 overflow-y-auto pb-4 md:py-0 focus:outline-none" >
+        <main className="flex-1 relative z-0 overflow-y-scroll pb-4 md:py-0 focus:outline-none" >
           <Map
             viewTestCenters={showTestCenters}
             selectedLocCoordinate={selectedLocCoordinate}
             setDashboardData={setDashboardData}
           />
-          <div className="absolute inset-x-0 h-screen bg-gray-700 w-full" style={{marginTop:"70vh"}}>
+          <div className="absolute inset-x-0 h-screen bg-gray-700 w-full" style={{marginTop:"80vh"}}>
             <div id="wrapper" className="max-w-xl px-4 py-4 mx-auto">
-              <div className="sm:grid sm:h-32 sm:grid-flow-row sm:gap-4 sm:grid-cols-3">
+              <div className="grid h-32 grid-flow-row gap-4 grid-cols-4">
                   {[
-                    {type: "-", name: "Active", change: "5", value:dashboardData?.active | "0"},
+                    {type: "+", name: "Active", change: "5", value:dashboardData?.active | "0"},
                     {type: "+", name: "Cases", change: "5", value:dashboardData?.confirmed | "0"},
                     {type: "+", name: "Death", change: "1", value:dashboardData?.deceased | "0"},
                     {type: "+", name: "Death", change: "1", value:dashboardData?.recovered | "0"},

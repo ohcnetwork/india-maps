@@ -11,6 +11,7 @@ import {
 import { readRemoteFile } from "react-papaparse";
 import {formattedDate} from "../utils/DateUtil";
 import {findClosest} from "../utils/LocationUtils";
+import {groupMetricsByStateAndCountry} from "../utils/DataUtils";
 
 import geoLocation from "../data/geoLocation.js";
 import districtGeoLocation from "../data/kerala_district.geo.json";
@@ -25,28 +26,7 @@ const papaparseOptions = {
 };
 
 // to aggregate data by state+country and sum up metrics
-const groupMetricsByStateAndCountry = (data) => {
-  const internationalDataLookup = Array.isArray(data)
-    ? data
-    .filter((data) => data.lat && data.long_)
-    .reduce((intLookup, data) => {
-      const key = `${data.province_state}.${data.country_region}`;
-      if (intLookup[key]) {
-        intLookup[key] = {
-          ...intLookup[key],
-          deaths: intLookup[key].deaths + data.deaths,
-          confirmed: intLookup[key].confirmed + data.confirmed,
-          recovered: intLookup[key].recovered + data.recovered,
-          active: intLookup[key].active + data.active,
-        };
-        return intLookup;
-      }
-      intLookup[key] = data;
-      return intLookup
-    }, {})
-    : {};
-  return Object.keys(internationalDataLookup).map(key => internationalDataLookup[key]);
-}
+
 
 export default function MapContainer(props) {
   const {
@@ -211,27 +191,24 @@ export default function MapContainer(props) {
   }
   const focusLocation = (latlng) => {
     const [closest,closestData] = findClosest(latlng, districtData.data);
-    const newGeo=districtGeoLocation.features.find(feature => feature.properties[districtData.geo_json_id]===closest);
-    console.log(newGeo)
+    const newGeo = closestData.geojson_feature
     setGeoJSON(newGeo)
-    setDashboardData(closestData)
+    setDashboardData({...closestData, name: closest})
   }
-  const marker = center.hasLocation ? (
+  const marker = 
     <Marker position={center.latlng}>
       <Popup>You are here</Popup>
     </Marker>
-  ) : null
   const [geoJSON, setGeoJSON] = useState();
   return (
       <Map 
-        className="h-screen w-full fixed" 
-        center={center.latlng} 
+        className="h-full w-full md:w-4/5 fixed" 
+        center={{lat: 9.5915668,lng: 76.5221531}} 
         zoom={7} 
         ref={mapRef}
-        minZoom={3} 
         maxBounds={[[90,-270],[-90,-270],[90,360],[-90,360]]}
-        onClick={e=>{focusLocation(e.latlng)}}
-        onMoveend={e=>{focusLocation(e.target.getCenter())}}
+        onClick={e=>{setCenter({latlng: e.latlng}); focusLocation(e.latlng)}}
+        onMoveend={e=>{setCenter({latlng: e.target.getCenter()}); focusLocation(e.target.getCenter())}}
       >
         {
           geoJSON &&
@@ -301,42 +278,7 @@ export default function MapContainer(props) {
                 radius={
                   15000 + findRadius(locationData.confirmedCasesIndian + locationData.confirmedCasesForeign)
                 }
-                onMouseOver={e => {
-                  firstLoad && setFirstLoad(false);
-                  e.target.openPopup();
-                }}
               >
-
-                {
-                  (locationData.discharged) ?
-                    <Circle
-                      key={`discharged-${location.state}`}
-                      center={[location.latitude, location.longitude]}
-                      fillColor="#1df500"
-                      fillOpacity={0.7}
-                      stroke={false}
-                      radius={400 +findRadius(locationData.discharged)}
-                      onMouseOver={e => {
-                        firstLoad && setFirstLoad(false);
-                        e.target.openPopup();
-                      }}
-                    ></Circle> : null
-                }
-                {
-                  (locationData.deaths) ?
-                    <Circle
-                      key={`deaths-${location.state}`}
-                      center={[location.latitude, location.longitude]}
-                      fillColor="#f55600"
-                      fillOpacity={0.9}
-                      stroke={false}
-                      radius={findRadius(locationData.deaths)/2}
-                      onMouseOver={e => {
-                        firstLoad && setFirstLoad(false);
-                        e.target.openPopup();
-                      }}
-                    ></Circle> : null
-                }
                 <Popup>
                   <h3>{location.state}</h3>
                       Cases: {
@@ -359,23 +301,7 @@ export default function MapContainer(props) {
                 fillOpacity={0.6}
                 stroke={false}
                 radius={15000 + findRadius(data.active)}
-                onMouseOver={e => {
-                  firstLoad && setFirstLoad(false);
-                  e.target.openPopup();
-                }}
-              >
-                  <Popup>
-                    <h3 style={{ margin: "0px" }}>{location}</h3>
-                    Kerala
-                    <br />
-                    Observation: {data.total_obs}
-                    Hospitalized: {data.hospital_obs}
-                    Home Isolation: {data.home_obs}
-                    Cases: {data.confirmed}
-                    Cured/Discharged: {data.recovered}
-                    Deaths: {data.deceased}
-                  </Popup>
-              </Circle>
+              />
           )}
         {internationalData.map((location, index) => {
           if (location.country_region === "India") {
