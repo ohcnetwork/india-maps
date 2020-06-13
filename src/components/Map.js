@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Circle,
+  GeoJSON,
   Map,
   Marker,
   Popup,
@@ -8,11 +9,14 @@ import {
   TileLayer
 } from "react-leaflet";
 import { readRemoteFile } from "react-papaparse";
-import geoLocation from "../data/geoLocation.js";
-import districtGeoLocation from "../data/districtGeoLocation.js";
-import testCenters from "../data/testCenters.js";
+import {formattedDate} from "../utils/DateUtil";
+import {findClosest} from "../utils/LocationUtils";
 
-let center = [9.5915668, 76.5221531];
+import geoLocation from "../data/geoLocation.js";
+import districtGeoLocation from "../data/kerala_district.geo.json";
+import testCenters from "../data/testCenters.js";
+import geoData from "../data/kashmir.geo.json";
+
 const papaparseOptions = {
   header: true,
   dynamicTyping: true,
@@ -47,9 +51,8 @@ const groupMetricsByStateAndCountry = (data) => {
 export default function MapContainer(props) {
   const {
     onStateWiseDataGetSuccess,
-    onDistrictWiseDataGetSuccess,
-    viewTestCenters,
-    selectedLocCoordinate
+    selectedLocCoordinate,
+    setDashboardData
   } = props;
 
   if (selectedLocCoordinate && selectedLocCoordinate.length) {
@@ -69,7 +72,7 @@ export default function MapContainer(props) {
   const [countryStats, setCountryStats] = useState(null);
   const [worldStats, setWorldStats] = useState(null);
 
-  // const [viewTestCenters, setViewTestCenters] = useState(false);
+  const [viewTestCenters, setViewTestCenters] = useState(false);
   const [showInfoHead, setShowInfoHead] = useState(true);
   const [firstLoad, setFirstLoad] = useState(true);
 
@@ -95,31 +98,13 @@ export default function MapContainer(props) {
           setIndiaData(null);
   }, [stateData, indiaData]);
   useEffect(() => {
-    console.log("Fetching Data");
-    fetch("https://exec.clay.run/kunksed/mohfw-covid")
-      .then(res => res.json())
-      .then(
-        result => {
-          // console.log("Received Response")
-          setIndiaData(result);
-        },
-        error => {
-          // console.log("Error Response")
-        }
-      );
-    fetch("https://volunteer.coronasafe.network/api/reports")
+    fetch("https://raw.githubusercontent.com/coronasafe/geo-stats/master/Kerala_Covid_Cordinate_Data.json")
       .then(res => res.json())
       .then(
         result => {
           console.log("Received Response" + result);
-          onDistrictWiseDataGetSuccess
-            ? onDistrictWiseDataGetSuccess(result)
-            : (() => { })();
           setDistrictData(result);
-        },
-        error => {
-          console.log("Error Response");
-        }
+          }
       );
 
     fetch("https://api.rootnet.in/covid19-in/stats/latest")
@@ -160,19 +145,11 @@ export default function MapContainer(props) {
       );
 
     const tryYesterday = date => {
-      date.setDate(date.getDate() - 1);
-      const formattedDate =
-        (date.getMonth() > 8
-          ? date.getMonth() + 1
-          : "0" + (date.getMonth() + 1)) +
-        "-" +
-        (date.getDate() > 9 ? date.getDate() : "0" + date.getDate()) +
-        "-" +
-        date.getFullYear();
-      // console.log(formattedDate);
+      date.setDate(date.getDate() - 1)
+      const yesterday=formattedDate(date);
       readRemoteFile(
         "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" +
-        formattedDate +
+        yesterday +
         ".csv",
         {
           ...papaparseOptions,
@@ -182,17 +159,9 @@ export default function MapContainer(props) {
       );
     };
     const date = new Date();
-    const formattedDate =
-      (date.getMonth() > 8
-        ? date.getMonth() + 1
-        : "0" + (date.getMonth() + 1)) +
-      "-" +
-      (date.getDate() > 9 ? date.getDate() : "0" + date.getDate()) +
-      "-" +
-      date.getFullYear();
     readRemoteFile(
       "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" +
-      formattedDate +
+      formattedDate(date) +
       ".csv",
       {
         ...papaparseOptions,
@@ -206,14 +175,74 @@ export default function MapContainer(props) {
   const findRadius = cases => {
     return (Math.cbrt(cases)) * 1500
   }
+  const [center,setCenter] = useState({
+    hasLocation: false,
+    latlng: {
+      lat: 9.5915668,
+      lng: 76.5221531
+    }})
+  const mapRef = useRef(null);
+  const handleClick = () => {
+    const map = mapRef.current
+    if (map != null) {
+      map.leafletElement.locate()
+    }
+  }
+
+  const geoJSONStyle = (feature) => {return {
+    color: '#FFFFFF',
+    weight: 1,
+    fillOpacity: 0.5,
+    fillColor: '#A73829',
+  }}
+  const renderTooltip = (feature) => {
+    return `Details Unavailable`
+  }
+  const onEachFeature = (feature, layer) => {
+    const tooltipChildren = renderTooltip(feature);
+    const popupContent = `<Popup> ${tooltipChildren} </Popup>`
+    layer.bindPopup(popupContent)
+  }
+  const handleLocationFound = (e) => {
+    setCenter({
+      hasLocation: true,
+      latlng: e.latlng,
+    })
+  }
+  const focusLocation = (latlng) => {
+    const [closest,closestData] = findClosest(latlng, districtData.data);
+    const newGeo=districtGeoLocation.features.find(feature => feature.properties[districtData.geo_json_id]===closest);
+    console.log(newGeo)
+    setGeoJSON(newGeo)
+    setDashboardData(closestData)
+  }
+  const marker = center.hasLocation ? (
+    <Marker position={center.latlng}>
+      <Popup>You are here</Popup>
+    </Marker>
+  ) : null
+  const [geoJSON, setGeoJSON] = useState();
   return (
       <Map 
         className="h-screen w-full fixed" 
-        center={center} 
+        center={center.latlng} 
         zoom={7} 
+        ref={mapRef}
         minZoom={3} 
         maxBounds={[[90,-270],[-90,-270],[90,360],[-90,360]]}
+        onClick={e=>{focusLocation(e.latlng)}}
+        onMoveend={e=>{focusLocation(e.target.getCenter())}}
       >
+        {
+          geoJSON &&
+          <GeoJSON
+            key={geoJSON.properties[districtData.geo_json_id]}
+            data={geoJSON}
+            style={geoJSONStyle}
+            onEachFeature={onEachFeature}
+          />}
+
+        {marker}
         <TileLayer
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
@@ -321,98 +350,33 @@ export default function MapContainer(props) {
             );
           })}
         {districtData &&
-          districtGeoLocation.map(location => {
+          Object.entries(districtData.data).map(([location,data]) =>
             // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
-            const locationData = districtData.kerala[location.district];
-            if (
-              locationData === undefined ||
-              locationData.corona_positive === 0
-            )
-              return null;
-            return (
               <Circle
-                key={location.district}
-                center={[location.latitude, location.longitude]}
+                key={location}
+                center={[data.latitude, data.longitude]}
                 fillColor="#d14f69"
                 fillOpacity={0.6}
                 stroke={false}
-                radius={15000 + findRadius(locationData.corona_positive)}
+                radius={15000 + findRadius(data.active)}
                 onMouseOver={e => {
                   firstLoad && setFirstLoad(false);
                   e.target.openPopup();
                 }}
               >
-
-
-                {
-                  (locationData.total_hospitalised) ?
-                    <Circle
-                      key={`hospitilized-${location.district}`}
-                      center={[location.latitude, location.longitude]}
-                      fillColor="#04dbd4"
-                      fillOpacity={0.8}
-                      stroke={false}
-                      radius={findRadius(locationData.total_hospitalised)/4}
-                      onMouseOver={e => {
-                        firstLoad && setFirstLoad(false);
-                        e.target.openPopup();
-                      }}
-                    ></Circle> : null
-                }
-                {
-                  (locationData.cured_discharged) ?
-                    <Circle
-                      key={`cured-${location.district}`}
-                      center={[location.latitude, location.longitude]}
-                      fillColor="#1df500"
-                      fillOpacity={0.7}
-                      stroke={false}
-                      radius={400 +findRadius(locationData.cured_discharged)}
-                      onMouseOver={e => {
-                        firstLoad && setFirstLoad(false);
-                        e.target.openPopup();
-                      }}
-                    ></Circle> : null
-                }
-                {
-                  (locationData.deaths) ?
-                    <Circle
-                      key={`deaths-${location.district}`}
-                      center={[location.latitude, location.longitude]}
-                      fillColor="#f55600"
-                      fillOpacity={0.9}
-                      stroke={false}
-                      radius={findRadius(locationData.deaths)/2}
-                      onMouseOver={e => {
-                        firstLoad && setFirstLoad(false);
-                        e.target.openPopup();
-                      }}
-                    ></Circle> : null
-                }
-                {location.state !== "Kerala" && (
-                  // firstLoad ?
-                  // <Tooltip permanent>
-                  // <h3>{location.state}</h3><br/>
-                  // Cases: {locationData.cases},<br/>
-                  // Cured/Discharged: {locationData.cured_discharged},<br/>
-                  // Deaths: {locationData.deaths},<br/>
-                  // Helpline: {locationData.helpline}</Tooltip>
-                  // :
                   <Popup>
-                    <h3 style={{ margin: "0px" }}>{location.district}</h3>
+                    <h3 style={{ margin: "0px" }}>{location}</h3>
                     Kerala
                     <br />
-                    Observation: {locationData.under_observation}
-                    Hospitalized: {locationData.total_hospitalised}
-                    Home Isolation: {locationData.under_home_isolation}
-                    Cases: {locationData.corona_positive}
-                    Cured/Discharged: {locationData.cured_discharged}
-                    Deaths: {locationData.deaths}
+                    Observation: {data.total_obs}
+                    Hospitalized: {data.hospital_obs}
+                    Home Isolation: {data.home_obs}
+                    Cases: {data.confirmed}
+                    Cured/Discharged: {data.recovered}
+                    Deaths: {data.deceased}
                   </Popup>
-                )}
               </Circle>
-            );
-          })}
+          )}
         {internationalData.map((location, index) => {
           if (location.country_region === "India") {
             if (countryStats === null) setCountryStats(location);
@@ -434,40 +398,6 @@ export default function MapContainer(props) {
                 e.target.openPopup();
               }}
             >
-            {
-                (location.recovered) ?
-                  <Circle
-                    key={location.province_state
-                      ? "recovered-"+location.province_state + "." + location.country_region
-                      : "recovered-"+location.country_region}
-                    center={[location.lat, location.long_]}
-                    fillColor="#1df500"
-                    fillOpacity={0.7}
-                    stroke={false}
-                    radius={200 +findRadius(location.recovered)}
-                    onMouseOver={e => {
-                      e.target.openPopup();
-                    }}
-                  ></Circle> : null
-            }
-
-              {
-                (location.deaths) ?
-                  <Circle
-                    key={location.province_state
-                      ? "deaths-" +location.province_state + "." + location.country_region
-                      : "deaths-" +location.country_region}
-                    center={[location.lat, location.long_]}
-                    fillColor="#f55600"
-                    fillOpacity={0.8}
-                    stroke={false}
-                    radius={100 +findRadius(location.deaths)}
-                    onMouseOver={e => {
-                      e.target.openPopup();
-                    }}
-                  ></Circle> : null
-              }
-
               <Popup>
                 <h3>
                   {location.province_state

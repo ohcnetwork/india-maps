@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Map from "./components/Map.js";
+import StatBox from "./components/StatBox.js";
 
 const img = require("./logo.svg");
 function App(){
@@ -22,6 +23,7 @@ function App(){
       selectedLocationDataDisplay,
       selectedLocCoordinate
     } = dummy;
+    const [dashboardData, setDashboardData] = useState();
     return (
       <div className="h-screen flex overflow-hidden bg-gray-100">
       {
@@ -51,20 +53,20 @@ function App(){
                       ? "mt-2 group flex w-full items-center px-2 py-2 text-base leading-5 font-medium text-white rounded-md bg-green-900 focus:outline-none focus:bg-green-900 transition ease-in-out duration-150"
                       : "mt-2 group flex w-full items-center px-2 py-2 text-base leading-5 font-medium text-green-300 rounded-md hover:text-white hover:bg-green-700 focus:outline-none focus:bg-green-900 transition ease-in-out duration-150";
                     return (
-                      <a
+                      <span
                         key={item.title}
                         className={selectedClasses}
                       >
                         <i className={item.icon + false ? " text-white" : " text-green-400" + " mr-3 text-md group-hover:text-green-300 group-focus:text-green-300 transition ease-in-out duration-150"}>
                         </i>
                         {item.title}
-                      </a>
+                      </span>
                     );
                   })}
                 </nav>
               </div>
               <div className="flex-shrink-0 flex border-t border-green-700 p-4">
-                <a href="#" className="flex-shrink-0 w-full group block">
+                <sapn href="#" className="flex-shrink-0 w-full group block">
                   <div className="flex items-center">
                     <div>
                       <div className="rounded-full h-8 w-8 flex items-center bg-white justify-center">
@@ -77,7 +79,7 @@ function App(){
                       </p>
                     </div>
                   </div>
-                </a>
+                </sapn>
               </div>
             </div>
             <div className="flex-shrink-0 w-14">
@@ -86,7 +88,7 @@ function App(){
         </div>
       }
 
-      <div className="hidden md:flex md:flex-shrink-0 w-1/4 bg-gray-200">
+      <div className="hidden md:flex md:flex-shrink-0 w-1/5 bg-gray-200">
         <div className="flex flex-col pt-5">
           <div className="flex items-center flex-shrink-0 px-4">
             <a href="/">
@@ -143,9 +145,19 @@ function App(){
           <Map
             viewTestCenters={showTestCenters}
             selectedLocCoordinate={selectedLocCoordinate}
+            setDashboardData={setDashboardData}
           />
-          <div class="absolute inset-x-0 h-screen bg-gray-700 w-full" style={{marginTop:"90vh"}}>
-            
+          <div className="absolute inset-x-0 h-screen bg-gray-700 w-full" style={{marginTop:"70vh"}}>
+            <div id="wrapper" className="max-w-xl px-4 py-4 mx-auto">
+              <div className="sm:grid sm:h-32 sm:grid-flow-row sm:gap-4 sm:grid-cols-3">
+                  {[
+                    {type: "-", name: "Active", change: "5", value:dashboardData?.active | "0"},
+                    {type: "+", name: "Cases", change: "5", value:dashboardData?.confirmed | "0"},
+                    {type: "+", name: "Death", change: "1", value:dashboardData?.deceased | "0"},
+                    {type: "+", name: "Death", change: "1", value:dashboardData?.recovered | "0"},
+                  ].map(stat => <StatBox type={stat.type} name={stat.name} change={stat.change} value={stat.value} />)}
+              </div>
+          </div>
           </div>
         </main>
       </div>
