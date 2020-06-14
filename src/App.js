@@ -23,9 +23,10 @@ function App(){
       selectedLocationDataDisplay,
       selectedLocCoordinate
     } = dummy;
-    const [selectedTab, setSelectedTab] = useState("Kerala");
+    const [selectedTab, setSelectedTab] = useState("World");
     const [dashboardData, setDashboardData] = useState();
     const [rootData, setRootData] = useState({});
+    const [pan, setPan] = useState({zoom:7, position: {lat: 9.5915668,lng: 76.5221531}, geoJson:null});
     return (
       <div className="h-screen flex overflow-hidden bg-gray-100">
       {
@@ -65,12 +66,16 @@ function App(){
                       ? "mt-2 group flex w-full items-center px-2 py-2 text-base leading-5 font-medium text-white rounded-md bg-green-900 focus:outline-none focus:bg-green-900 transition ease-in-out duration-150"
                       : "mt-2 group flex w-full items-center px-2 py-2 text-base leading-5 font-medium text-gray-800 rounded-md hover:text-white hover:bg-green-700 focus:outline-none focus:bg-green-900 transition ease-in-out duration-150";
                     return (
-                      <span
+                      <button
                         key={name}
                         className={selectedClasses}
+                        onClick={()=>{
+                          setPan({geoJson:item.geojson_feature, location:name, position:{lat:item.latitude, lng:item.longitude}})
+                          setDashboardData({...item, name:name})
+                        }}
                       >
                         {name}
-                      </span>
+                      </button>
                     );
                   })}
                 </nav>
@@ -120,6 +125,10 @@ function App(){
                   <button
                     key={name}
                     className={selectedClasses}
+                    onClick={()=>{
+                      setPan({geoJson:item.geojson_feature, location:name, position:{lat:item.latitude, lng:item.longitude}})
+                      setDashboardData({...item, name:name})
+                    }}
                   >
                     {name}
                   </button>
@@ -154,12 +163,12 @@ function App(){
 
         <main className="flex-1 relative z-0 overflow-y-scroll pb-4 md:py-0 focus:outline-none" >
           <Map
-            viewTestCenters={showTestCenters}
-            selectedLocCoordinate={selectedLocCoordinate}
             setDashboardData={setDashboardData}
             setRootData={setRootData}
+            pan={pan}
+            setPan={setPan}
           />
-          <div className="absolute inset-x-0 h-screen bg-gray-700 w-full" style={{marginTop:"80vh"}}>
+          <div className="absolute inset-x-0 h-screen bg-gray-700 w-full" style={{marginTop:"70vh"}}>
             <div id="wrapper" className="max-w-xl px-4 py-4 mx-auto">
             <h4 className="text-white py-1">{dashboardData?.name}</h4>
               <div className="grid h-32 grid-flow-row gap-4 grid-cols-4">

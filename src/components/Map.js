@@ -30,18 +30,12 @@ const papaparseOptions = {
 
 export default function MapContainer(props) {
   const {
-    onStateWiseDataGetSuccess,
-    selectedLocCoordinate,
     setDashboardData,
-    setRootData
+    setRootData,
+    setPan,
+    pan
   } = props;
 
-  if (selectedLocCoordinate && selectedLocCoordinate.length) {
-    center = [
-      selectedLocCoordinate[0].latitude,
-      selectedLocCoordinate[0].longitude
-    ];
-  }
   const [indiaData, setIndiaData] = useState(null);
 
   const [stateData, setStateData] = useState(null);
@@ -57,112 +51,52 @@ export default function MapContainer(props) {
   const [showInfoHead, setShowInfoHead] = useState(true);
   const [firstLoad, setFirstLoad] = useState(true);
 
-  const parseInternationalData = ({ data }) => {
-    setInternationalData(groupMetricsByStateAndCountry(data));
-    Array.isArray(data) &&
-      setWorldStats(
-        data.reduce((a, b) => ({
-          confirmed: a.confirmed + b.confirmed,
-          deaths: a.deaths + b.deaths,
-          recovered: a.recovered + b.recovered
-        }))
-      );
-  };
+  const [mapPan, setMapPan] = useState(pan);
+
+  useEffect(()=>{
+    setMapPan(pan)
+    console.log("Pan: " + JSON.stringify(pan.geoJson))
+  },[pan])
+
+  useEffect(()=>{
+    setRootData({data: internationalData})
+  },[internationalData])
   useEffect(() => {
-    if (countrySummary)
-      if (indiaData.countryData)
-        if (
-          countrySummary.confirmedCasesIndian +
-          countrySummary.confirmedCasesForeign >
-          indiaData.countryData.total
-        )
-          setIndiaData(null);
-  }, [stateData, indiaData]);
-  useEffect(() => {
-    fetch("https://raw.githubusercontent.com/coronasafe/geo-stats/master/Kerala_Covid_Cordinate_Data.json")
+    fetch("https://stats.coronasafe.live/covid_data_json/kerala_covid_data.json")
       .then(res => res.json())
       .then(
         result => {
           console.log("Received Response" + result);
           setDistrictData(result);
-          setRootData(result);
           }
       );
-
-    fetch("https://api.rootnet.in/covid19-in/stats/latest")
+    
+    fetch("https://stats.coronasafe.live/covid_data_json/other_countries_covid_data.json")
       .then(res => res.json())
       .then(
         result => {
-          console.log("Received Response" + result);
-          onStateWiseDataGetSuccess
-            ? onStateWiseDataGetSuccess(result.data)
-            : (() => { })();
-          setStateData(
-            Object.assign(
-              {},
-              ...result.data.regional.map(
-                ({
-                  loc,
-                  confirmedCasesIndian,
-                  confirmedCasesForeign,
-                  deaths,
-                  discharged
-                }) => ({
-                  [loc]: {
-                    confirmedCasesIndian,
-                    confirmedCasesForeign,
-                    deaths,
-                    discharged
-                  }
-                })
-              )
-            )
-          );
-
-          setCountrySummary(result.data.summary);
-        },
-        error => {
-          console.log("Error Response");
-        }
+          setInternationalData(result.reduce((acc,cur) => {
+            return {
+              ...acc,
+              [cur.Country]:{
+                geojson_feature: JSON.parse(cur.geo_json_feature.split("'").join("\"")), 
+                confirmed: cur['Confirmed'], 
+                deceased: cur['Deaths'],
+                recovered: cur['Recovered'], 
+                active: cur['Active'],
+                latitude: cur['Lat'],
+                longitude: cur['Long_']
+              }
+            }
+          },{}));
+          }
       );
 
-    const tryYesterday = date => {
-      date.setDate(date.getDate() - 1)
-      const yesterday=formattedDate(date);
-      readRemoteFile(
-        "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" +
-        yesterday +
-        ".csv",
-        {
-          ...papaparseOptions,
-          complete: parseInternationalData,
-          error: () => tryYesterday(date)
-        }
-      );
-    };
-    const date = new Date();
-    readRemoteFile(
-      "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" +
-      formattedDate(date) +
-      ".csv",
-      {
-        ...papaparseOptions,
-        complete: parseInternationalData,
-        error: () => tryYesterday(date)
-      }
-    );
   }, []);
-  console.log(viewTestCenters);
 
   const findRadius = cases => {
     return (Math.cbrt(cases)) * 1500
   }
-  const [center,setCenter] = useState({
-    hasLocation: false,
-    latlng: {
-      lat: 9.5915668,
-      lng: 76.5221531
-    }})
 
   const geoJSONStyle = (feature) => {return {
     color: '#FFFFFF',
@@ -179,108 +113,34 @@ export default function MapContainer(props) {
     layer.bindPopup(popupContent)
   }
   const focusLocation = (latlng) => {
-    const [closest,closestData] = findClosest(latlng, districtData.data);
+    const [closest,closestData] = findClosest(latlng, internationalData);
     const newGeo = closestData.geojson_feature
-    setGeoJSON(newGeo)
+    setPan({geoJson:newGeo, location:closest})
     setDashboardData({...closestData, name: closest})
   }
-  const marker = 
-    <Marker position={center.latlng}>
-      <Popup>You are here</Popup>
-    </Marker>
-  const [geoJSON, setGeoJSON] = useState();
   return (
       <Map 
         className="h-full w-full md:w-4/5 fixed" 
-        center={{lat: 9.5915668,lng: 76.5221531}} 
-        zoom={7} 
-        minZoom={3}
-        maxBounds={[[90,-270],[-90,-270],[90,360],[-90,360]]}
-        onClick={e=>{setCenter({latlng: e.latlng}); focusLocation(e.latlng)}}
-        onMoveend={e=>{setCenter({latlng: e.target.getCenter()}); focusLocation(e.target.getCenter())}}
+        center={mapPan.position} 
+        zoom={mapPan.zoom} 
+        minZoom={2}
+        maxBounds={[[-85,-180],[85,180]]}
+        onClick={e=>{focusLocation(e.latlng)}}
+        onMoveend={e=>{focusLocation(e.target.getCenter())}}
       >
         {
-          geoJSON &&
+          mapPan.geoJson &&
           <GeoJSON
-            key={geoJSON.properties[districtData.geo_json_id]}
-            data={geoJSON}
+            key={mapPan.location}
+            data={mapPan.geoJson}
             style={geoJSONStyle}
             onEachFeature={onEachFeature}
           />
         }
-
-        {marker}
         <TileLayer
-          attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          attribution='&amp;copy <a href="https://carto.com">Carto</a>'
           url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
         />
-        {indiaData && indiaData.stateData
-          ? geoLocation.map(location => {
-            console.log(
-              location.state +
-              "|" +
-              JSON.stringify(indiaData.stateData[location.state])
-            );
-            const locationData = indiaData.stateData[location.state];
-            if (locationData.cases === 0 || location.state === "Kerala")
-              return null;
-            return (
-              <Circle
-                key={location.state}
-                center={[location.latitude, location.longitude]}
-                fillColor="#d14f69"
-                fillOpacity={0.6}
-                stroke={false}
-                radius={15000 + findRadius(locationData.cases)}
-                onMouseOver={e => {
-                  firstLoad && setFirstLoad(false);
-                  e.target.openPopup();
-                }}
-              >
-                <Popup>
-                  <h3>{location.state}</h3>
-                      Cases: {locationData.cases}
-                      Cured/Discharged: {locationData.cured_discharged}
-                      Deaths: {locationData.Deaths}
-                      Helpline: {locationData.helpline}
-                </Popup>
-              </Circle>
-            );
-          })
-          : stateData &&
-          geoLocation.map(location => {
-            // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
-            const locationData = stateData[location.state];
-            if (
-              locationData === undefined ||
-              (locationData.confirmedCasesIndian === 0 &&
-                locationData.confirmedCasesForeign === 0) ||
-              location.state === "Kerala"
-            )
-              return null;
-            return (
-              <Circle
-                key={location.state}
-                center={[location.latitude, location.longitude]}
-                fillColor="#d14f69"
-                fillOpacity={0.6}
-                stroke={false}
-                radius={
-                  15000 + findRadius(locationData.confirmedCasesIndian + locationData.confirmedCasesForeign)
-                }
-              >
-                <Popup>
-                  <h3>{location.state}</h3>
-                      Cases: {
-                        locationData.confirmedCasesIndian +
-                        locationData.confirmedCasesForeign
-                      }
-                      Cured/Discharged: {locationData.discharged}
-                      Deaths: {locationData.deaths}
-                </Popup>
-              </Circle>
-            );
-          })}
         {districtData &&
           Object.entries(districtData.data).map(([location,data]) =>
             // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
@@ -293,7 +153,7 @@ export default function MapContainer(props) {
                 radius={15000 + findRadius(data.active)}
               />
           )}
-        {internationalData.map((location, index) => {
+        {Object.entries(internationalData).map(([country,location], index) => {
           if (location.country_region === "India") {
             if (countryStats === null) setCountryStats(location);
             return null;
@@ -301,11 +161,9 @@ export default function MapContainer(props) {
           return (
             <Circle
               key={
-                location.province_state
-                  ? location.province_state + "." + location.country_region
-                  : location.country_region
+                country
               }
-              center={[location.lat, location.long_]}
+              center={{lat: location.latitude, lng: location.longitude}}
               fillColor="#d14f69"
               fillOpacity={0.6}
               stroke={false}
@@ -315,7 +173,9 @@ export default function MapContainer(props) {
               }}
             >
               <Popup>
-                <h3>
+                {country}
+                {location.confirmed}
+                {/* <h3>
                   {location.province_state
                     ? location.province_state
                     : location.country_region}
@@ -331,7 +191,7 @@ export default function MapContainer(props) {
                     Deaths: {location.deaths}
                 <hr />
                 Last Update: {location.last_update}
-                <br />
+                <br /> */}
               </Popup>
             </Circle>
           );
