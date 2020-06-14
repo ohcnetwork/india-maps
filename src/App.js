@@ -23,7 +23,9 @@ function App(){
       selectedLocationDataDisplay,
       selectedLocCoordinate
     } = dummy;
+    const [selectedTab, setSelectedTab] = useState("Kerala");
     const [dashboardData, setDashboardData] = useState();
+    const [rootData, setRootData] = useState({});
     return (
       <div className="h-screen flex overflow-hidden bg-gray-100">
       {
@@ -43,23 +45,31 @@ function App(){
               </div>
               <div className="flex-shrink-0 flex items-center px-4">
                 <a href="/">
-                  <img className="h-8 w-auto" src={img} alt="care logo" />
+                  <img className="h-8 w-auto" src={img} alt="coronasafe logo" />
                 </a>
+              </div>
+              <div className="p-2">
+                <ul className='flex cursor-pointer'>
+                  {["Kerala","India","World"].map(tab=>
+                      <li 
+                        className={'py-2 px-6 bg-white rounded-t-lg' + (selectedTab===tab ? "":" text-gray-500 bg-gray-200")}
+                        onClick={()=>setSelectedTab(tab)}
+                      >{tab}</li>
+                    )}
+                </ul>
               </div>
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
                 <nav className="px-2">
-                  {[{link:"", title:"title"}].map(item => {
-                    const selectedClasses = false
+                  {Object.entries(rootData?.data || {}).map(([name,item]) => {
+                    const selectedClasses = name === (dashboardData?.name || "")
                       ? "mt-2 group flex w-full items-center px-2 py-2 text-base leading-5 font-medium text-white rounded-md bg-green-900 focus:outline-none focus:bg-green-900 transition ease-in-out duration-150"
-                      : "mt-2 group flex w-full items-center px-2 py-2 text-base leading-5 font-medium text-green-300 rounded-md hover:text-white hover:bg-green-700 focus:outline-none focus:bg-green-900 transition ease-in-out duration-150";
+                      : "mt-2 group flex w-full items-center px-2 py-2 text-base leading-5 font-medium text-gray-800 rounded-md hover:text-white hover:bg-green-700 focus:outline-none focus:bg-green-900 transition ease-in-out duration-150";
                     return (
                       <span
-                        key={item.title}
+                        key={name}
                         className={selectedClasses}
                       >
-                        <i className={item.icon + false ? " text-white" : " text-green-400" + " mr-3 text-md group-hover:text-green-300 group-focus:text-green-300 transition ease-in-out duration-150"}>
-                        </i>
-                        {item.title}
+                        {name}
                       </span>
                     );
                   })}
@@ -68,13 +78,8 @@ function App(){
               <div className="flex-shrink-0 flex border-t border-green-700 p-4">
                 <sapn href="#" className="flex-shrink-0 w-full group block">
                   <div className="flex items-center">
-                    <div>
-                      <div className="rounded-full h-8 w-8 flex items-center bg-white justify-center">
-                        <i className="inline-block fas fa-user text-xl text-green-700"></i>
-                      </div>
-                    </div>
                     <div className="ml-3">
-                      <p className="text-xs leading-4 font-medium text-green-300 group-hover:text-green-100 transition ease-in-out duration-150">
+                      <p className="text-xs leading-4 font-medium text-gray-900 group-hover:text-green-100 transition ease-in-out duration-150">
                         Attribution
                       </p>
                     </div>
@@ -89,26 +94,34 @@ function App(){
       }
 
       <div className="hidden md:flex md:flex-shrink-0 w-1/5 bg-gray-200">
-        <div className="flex flex-col pt-5">
+        <div className="flex flex-col pt-5 w-full">
           <div className="flex items-center flex-shrink-0 px-4">
             <a href="/">
               <img className="h-8 w-auto" src={img} alt="care logo" />
             </a>
           </div>
           <div className="mt-5 h-0 flex-1 flex flex-col overflow-y-auto">
+            <div>
+              <ul className='p-2 flex cursor-pointer'>
+                {["Kerala","India","World"].map(tab=>
+                    <li 
+                      className={"py-2 px-6 bg-white rounded-t-lg" + (selectedTab===tab ? "":" text-gray-500 bg-gray-200")}
+                      onClick={()=>setSelectedTab(tab)}
+                    >{tab}</li>
+                  )}
+              </ul>
+            </div>
             <nav className="flex-1 px-2">
-              {[{link:"", title:"title"}].map(item => {
-                const selectedClasses = false
+              {Object.entries(rootData?.data || {}).map(([name,item]) => {
+                const selectedClasses = name === (dashboardData?.name || "")
                   ? "mt-2 group flex w-full items-center px-2 py-2 text-base leading-5 font-medium text-white rounded-md bg-green-900 focus:outline-none focus:bg-green-900 transition ease-in-out duration-150"
-                  : "mt-2 group flex w-full items-center px-2 py-2 text-base leading-5 font-medium text-green-300 rounded-md hover:text-white hover:bg-green-700 focus:outline-none focus:bg-green-900 transition ease-in-out duration-150";
+                  : "mt-2 group flex w-full items-center px-2 py-2 text-base leading-5 font-medium text-gray-800 rounded-md hover:text-white hover:bg-green-700 focus:outline-none focus:bg-green-900 transition ease-in-out duration-150";
                 return (
                   <button
-                    key={item.title}
+                    key={name}
                     className={selectedClasses}
                   >
-                    <i className={item.icon + (false ? " text-white" : " text-green-400") + " mr-3 text-lg group-hover:text-green-300 group-focus:text-green-300 transition ease-in-out duration-150"}>
-                    </i>
-                    {item.title}
+                    {name}
                   </button>
                 );
               })}
@@ -117,8 +130,6 @@ function App(){
           <div className="flex-shrink-0 flex border-t border-green-700 p-4">
             <a href="/" className="flex-shrink-0 w-full group block">
               <div className="flex items-center">
-                <div>
-                </div>
                 <div className="ml-3">
                   <p className="text-xs leading-4 font-medium text-gray-900 group-hover:text-green-100 transition ease-in-out duration-150">
                     Attribution
@@ -146,15 +157,17 @@ function App(){
             viewTestCenters={showTestCenters}
             selectedLocCoordinate={selectedLocCoordinate}
             setDashboardData={setDashboardData}
+            setRootData={setRootData}
           />
           <div className="absolute inset-x-0 h-screen bg-gray-700 w-full" style={{marginTop:"80vh"}}>
             <div id="wrapper" className="max-w-xl px-4 py-4 mx-auto">
+            <h4 className="text-white py-1">{dashboardData?.name}</h4>
               <div className="grid h-32 grid-flow-row gap-4 grid-cols-4">
                   {[
-                    {type: "+", name: "Active", change: "5", value:dashboardData?.active | "0"},
-                    {type: "+", name: "Cases", change: "5", value:dashboardData?.confirmed | "0"},
-                    {type: "+", name: "Death", change: "1", value:dashboardData?.deceased | "0"},
-                    {type: "+", name: "Death", change: "1", value:dashboardData?.recovered | "0"},
+                    {type: "+", name: "Active", change: dashboardData?.delta?.active | "0", value:dashboardData?.active | "0"},
+                    {type: "+", name: "Cases", change: dashboardData?.delta?.confirmed | "0", value:dashboardData?.confirmed | "0"},
+                    {type: "+", name: "Death", change: dashboardData?.delta?.deceased | "0", value:dashboardData?.deceased | "0"},
+                    {type: "+", name: "Death", change: dashboardData?.delta?.recovered | "0", value:dashboardData?.recovered | "0"},
                   ].map(stat => <StatBox type={stat.type} name={stat.name} change={stat.change} value={stat.value} />)}
               </div>
           </div>

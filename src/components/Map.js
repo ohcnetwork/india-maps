@@ -32,7 +32,8 @@ export default function MapContainer(props) {
   const {
     onStateWiseDataGetSuccess,
     selectedLocCoordinate,
-    setDashboardData
+    setDashboardData,
+    setRootData
   } = props;
 
   if (selectedLocCoordinate && selectedLocCoordinate.length) {
@@ -84,6 +85,7 @@ export default function MapContainer(props) {
         result => {
           console.log("Received Response" + result);
           setDistrictData(result);
+          setRootData(result);
           }
       );
 
@@ -161,13 +163,6 @@ export default function MapContainer(props) {
       lat: 9.5915668,
       lng: 76.5221531
     }})
-  const mapRef = useRef(null);
-  const handleClick = () => {
-    const map = mapRef.current
-    if (map != null) {
-      map.leafletElement.locate()
-    }
-  }
 
   const geoJSONStyle = (feature) => {return {
     color: '#FFFFFF',
@@ -182,12 +177,6 @@ export default function MapContainer(props) {
     const tooltipChildren = renderTooltip(feature);
     const popupContent = `<Popup> ${tooltipChildren} </Popup>`
     layer.bindPopup(popupContent)
-  }
-  const handleLocationFound = (e) => {
-    setCenter({
-      hasLocation: true,
-      latlng: e.latlng,
-    })
   }
   const focusLocation = (latlng) => {
     const [closest,closestData] = findClosest(latlng, districtData.data);
@@ -205,7 +194,7 @@ export default function MapContainer(props) {
         className="h-full w-full md:w-4/5 fixed" 
         center={{lat: 9.5915668,lng: 76.5221531}} 
         zoom={7} 
-        ref={mapRef}
+        minZoom={3}
         maxBounds={[[90,-270],[-90,-270],[90,360],[-90,360]]}
         onClick={e=>{setCenter({latlng: e.latlng}); focusLocation(e.latlng)}}
         onMoveend={e=>{setCenter({latlng: e.target.getCenter()}); focusLocation(e.target.getCenter())}}
@@ -217,7 +206,8 @@ export default function MapContainer(props) {
             data={geoJSON}
             style={geoJSONStyle}
             onEachFeature={onEachFeature}
-          />}
+          />
+        }
 
         {marker}
         <TileLayer

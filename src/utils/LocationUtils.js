@@ -29,7 +29,7 @@
         minDif = dif;
       }
     })
-    console.log(closest)
+    console.log(closest + ": " + minDif)
     // echo the nearest city
     return [closest,closestData];
   }
