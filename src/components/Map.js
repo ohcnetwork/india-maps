@@ -5,7 +5,7 @@ import {
   Marker,
   Popup,
   // Tooltip,
-  TileLayer
+  TileLayer,
 } from "react-leaflet";
 import { readRemoteFile } from "react-papaparse";
 import geoLocation from "../data/geoLocation.js";
@@ -16,10 +16,11 @@ const cx = classNames.bind(require("./map.module.css"));
 
 let center = [9.5915668, 76.5221531];
 const papaparseOptions = {
+  quotes:false,
   header: true,
   dynamicTyping: true,
   skipEmptyLines: true,
-  transformHeader: header => header.toLowerCase().replace(/\W/g, "_")
+  transformHeader: (header) => header.toLowerCase().replace(/\W/g, "_"),
 };
 
 const PopupLineItem = ({ type, count, legend }) => {
@@ -28,7 +29,11 @@ const PopupLineItem = ({ type, count, legend }) => {
       <div className={cx(["popup-legend", "legend-" + legend])}></div>
       <div className={cx("count-type")}>{type}</div>
       <div className={cx("counts")}>
-        {count !== undefined && count !== null ? count.toLocaleString(navigator.language, { maximumFractionDigits: 2 }) : ''}
+        {count !== undefined && count !== null
+          ? count.toLocaleString(navigator.language, {
+              maximumFractionDigits: 2,
+            })
+          : ""}
       </div>
     </>
   );
@@ -39,13 +44,13 @@ export default function MapContainer(props) {
     onStateWiseDataGetSuccess,
     onDistrictWiseDataGetSuccess,
     viewTestCenters,
-    selectedLocCoordinate
+    selectedLocCoordinate,
   } = props;
 
   if (selectedLocCoordinate && selectedLocCoordinate.length) {
     center = [
       selectedLocCoordinate[0].latitude,
-      selectedLocCoordinate[0].longitude
+      selectedLocCoordinate[0].longitude,
     ];
   }
   const [indiaData, setIndiaData] = useState(null);
@@ -63,21 +68,20 @@ export default function MapContainer(props) {
   const [showInfoHead, setShowInfoHead] = useState(true);
   const [firstLoad, setFirstLoad] = useState(true);
 
-  const parseInternationalData = data => {
-    // console.log("Setting International Data");
-    // console.log("International Data:" + JSON.stringify(data.data))
-    // setInternationalData(data.data);
+  const parseInternationalData = (res) => {
+    console.log("Setting International Data");
+    setInternationalData(res.data);
     setWorldStats(
-      data.data.reduce((a, b) => ({
+        res.data.reduce((a, b) => ({
         confirmed: a.confirmed + b.confirmed,
         deaths: a.deaths + b.deaths,
-        recovered: a.recovered + b.recovered
+        recovered: a.recovered + b.recovered,
       }))
     );
   };
   useEffect(() => {
     if (countrySummary)
-      if (indiaData.countryData)
+      if (indiaData?.countryData)
         if (
           countrySummary.confirmedCasesIndian +
             countrySummary.confirmedCasesForeign >
@@ -85,39 +89,39 @@ export default function MapContainer(props) {
         )
           setIndiaData(null);
   }, [stateData, indiaData]);
+  console.log(worldStats);
+
   useEffect(() => {
     console.log("Fetching Data");
     fetch("https://exec.clay.run/kunksed/mohfw-covid")
-      .then(res => res.json())
+      .then((res) => res.json())
       .then(
-        result => {
+        (result) => {
           // console.log("Received Response")
           setIndiaData(result);
         },
-        error => {
+        (error) => {
           // console.log("Error Response")
         }
       );
-    fetch("https://volunteer.coronasafe.network/api/reports")
-      .then(res => res.json())
+    fetch("https://keralastats.coronasafe.live/latest.json")
+      .then(result=>result.json()
       .then(
-        result => {
-          console.log("Received Response" + result);
+        (data) => {
           onDistrictWiseDataGetSuccess
-            ? onDistrictWiseDataGetSuccess(result)
+            ? onDistrictWiseDataGetSuccess(data.summary)
             : (() => {})();
-          setDistrictData(result);
+          setDistrictData(data.summary);
         },
-        error => {
+        (error) => {
           console.log("Error Response");
         }
-      );
+      ));
 
     fetch("https://api.rootnet.in/covid19-in/stats/latest")
-      .then(res => res.json())
+      .then((res) => res.json())
       .then(
-        result => {
-          console.log("Received Response" + result);
+        (result) => {
           onStateWiseDataGetSuccess
             ? onStateWiseDataGetSuccess(result.data)
             : (() => {})();
@@ -130,14 +134,14 @@ export default function MapContainer(props) {
                   confirmedCasesIndian,
                   confirmedCasesForeign,
                   deaths,
-                  discharged
+                  discharged,
                 }) => ({
                   [loc]: {
                     confirmedCasesIndian,
                     confirmedCasesForeign,
                     deaths,
-                    discharged
-                  }
+                    discharged,
+                  },
                 })
               )
             )
@@ -145,12 +149,12 @@ export default function MapContainer(props) {
 
           setCountrySummary(result.data.summary);
         },
-        error => {
+        (error) => {
           console.log("Error Response");
         }
       );
 
-    const tryYesterday = date => {
+    const tryYesterday = (date) => {
       date.setDate(date.getDate() - 1);
       const formattedDate =
         (date.getMonth() > 8
@@ -163,12 +167,13 @@ export default function MapContainer(props) {
       // console.log(formattedDate);
       readRemoteFile(
         "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" +
-          formattedDate +
+          // formattedDate +
+          "10-06-2020" +
           ".csv",
         {
           ...papaparseOptions,
           complete: parseInternationalData,
-          error: () => tryYesterday(date)
+          error: () => tryYesterday(date),
         }
       );
     };
@@ -184,12 +189,13 @@ export default function MapContainer(props) {
     // console.log(formattedDate);
     readRemoteFile(
       "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" +
-        formattedDate +
+        // formattedDate +
+        "10-06-2020" +
         ".csv",
       {
         ...papaparseOptions,
         complete: parseInternationalData,
-        error: () => tryYesterday(date)
+        error: () => tryYesterday(date),
       }
     );
   }, []);
@@ -203,12 +209,12 @@ export default function MapContainer(props) {
           url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
         />
         {indiaData && indiaData.stateData
-          ? geoLocation.map(location => {
-              console.log(
-                location.state +
-                  "|" +
-                  JSON.stringify(indiaData.stateData[location.state])
-              );
+          ? geoLocation.map((location) => {
+              // console.log(
+              //   location.state +
+              //     "|" +
+              //     JSON.stringify(indiaData.stateData[location.state])
+              // );
               const locationData = indiaData.stateData[location.state];
               if (locationData.cases === 0 || location.state === "Kerala")
                 return null;
@@ -217,8 +223,8 @@ export default function MapContainer(props) {
                   key={location.state}
                   center={[location.latitude, location.longitude]}
                   fillColor="red"
-                  radius={15000 + locationData.cases * 2500}
-                  onMouseOver={e => {
+                  radius={locationData.cases+10000}
+                  onMouseOver={(e) => {
                     firstLoad && setFirstLoad(false);
                     e.target.openPopup();
                   }}
@@ -249,7 +255,7 @@ export default function MapContainer(props) {
               );
             })
           : stateData &&
-            geoLocation.map(location => {
+            geoLocation.map((location) => {
               // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
               const locationData = stateData[location.state];
               if (
@@ -264,13 +270,13 @@ export default function MapContainer(props) {
                   key={location.state}
                   center={[location.latitude, location.longitude]}
                   fillColor="red"
-                  radius={
-                    15000 +
+                  radius={Math.max(
                     (locationData.confirmedCasesIndian +
                       locationData.confirmedCasesForeign) *
-                      2500
-                  }
-                  onMouseOver={e => {
+                      0.15,
+                    40000
+                  )}
+                  onMouseOver={(e) => {
                     firstLoad && setFirstLoad(false);
                     e.target.openPopup();
                   }}
@@ -302,12 +308,13 @@ export default function MapContainer(props) {
               );
             })}
         {districtData &&
-          districtGeoLocation.map(location => {
+          districtGeoLocation.map((location) => {
             // console.log(location.state + "|" + JSON.stringify(indiaData.stateData[location.state]))
-            const locationData = districtData.kerala[location.district];
+            console.log(location);
+            const locationData = districtData[location.district];
             if (
               locationData === undefined ||
-              locationData.corona_positive === 0
+              locationData.confirmed === 0
             )
               return null;
             return (
@@ -315,8 +322,8 @@ export default function MapContainer(props) {
                 key={location.district}
                 center={[location.latitude, location.longitude]}
                 fillColor="red"
-                radius={15000 + locationData.corona_positive * 2500}
-                onMouseOver={e => {
+                radius={Math.min(locationData.confirmed,20000)}
+                onMouseOver={(e) => {
                   firstLoad && setFirstLoad(false);
                   e.target.openPopup();
                 }}
@@ -338,32 +345,32 @@ export default function MapContainer(props) {
                       <PopupLineItem
                         legend="observation"
                         type="Observation"
-                        count={locationData.under_observation}
+                        count={locationData.total_obs}
                       />
                       <PopupLineItem
                         legend="hospitalized"
                         type="Hospitalized"
-                        count={locationData.total_hospitalised}
+                        count={locationData.hospital_today}
                       />
                       <PopupLineItem
                         legend="home-isolation"
                         type="Home Isolation"
-                        count={locationData.under_home_isolation}
+                        count={locationData.home_obs}
                       />
                       <PopupLineItem
                         legend="cases"
                         type="Cases"
-                        count={locationData.corona_positive}
+                        count={locationData.active}
                       />
                       <PopupLineItem
                         legend="cured"
                         type="Cured/Discharged"
-                        count={locationData.cured_discharged}
+                        count={locationData.recovered}
                       />
                       <PopupLineItem
                         legend="death"
                         type="Deaths"
-                        count={locationData.deaths}
+                        count={locationData.deceased}
                       />
                     </div>
                   </Popup>
@@ -372,7 +379,8 @@ export default function MapContainer(props) {
             );
           })}
         {/* {Array.isArray(internationalData) &&
-          internationalData.map(location => {
+          internationalData.map((location,i) => {
+            console.log(location);
             if (location.country_region === "India") {
               if (countryStats === null) setCountryStats(location);
               return null;
@@ -380,11 +388,9 @@ export default function MapContainer(props) {
             return (
               <Circle
                 key={
-                  location.province_state
-                    ? location.province_state + "." + location.country_region
-                    : location.country_region
+                 i
                 }
-                center={[location.latitude, location.longitude]}
+                center={[location.lat, location.long_ ]}
                 fillColor="red"
                 radius={15000 + location.confirmed * 20}
                 onMouseOver={e => {
@@ -428,12 +434,12 @@ export default function MapContainer(props) {
             );
           })} */}
         {viewTestCenters &&
-          testCenters.map(testCenter => {
+          testCenters.map((testCenter) => {
             return (
               <Marker
                 key={testCenter.institution}
                 position={[testCenter.latitude, testCenter.longitude]}
-                onMouseOver={e => {
+                onMouseOver={(e) => {
                   e.target.openPopup();
                 }}
               >
