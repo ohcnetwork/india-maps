@@ -111,7 +111,7 @@ class App extends Component {
                     viewTestCenters={showTestCenters}
                   />
                 </div>
-                {dimensions.width > this.mobileWindowSizeBreakPoint && (
+                {/* {dimensions.width > this.mobileWindowSizeBreakPoint && (
                   <div className={cx("new-wrapper")}>
                     <SelectedLocationData
                       locationData={{
@@ -120,7 +120,7 @@ class App extends Component {
                       }}
                     />
                   </div>
-                )}
+                )} */}
                 {dimensions.width <= this.mobileWindowSizeBreakPoint && (
                   <Dialog
                     onClose={this.handleClose}

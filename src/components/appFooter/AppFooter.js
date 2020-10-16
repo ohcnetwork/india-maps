@@ -4,7 +4,7 @@ const cx = classNames.bind(require("./appFooter.module.css"));
 const AppHeader = props => {
   const { news } = props;
   return (
-    <div className={cx("footer-container")}>
+    <div style={{fontSize:15}} className={cx("footer-container")}>
       <footer>
         Updated Live with data from{" "}
         <a

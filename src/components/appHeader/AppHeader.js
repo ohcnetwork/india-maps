@@ -21,7 +21,7 @@ const AppHeader = props => {
             className={cx("logo")}
             src="./coronaSafeLogo.svg"
             alt="CoronaSafe Logo"
-            height={80}
+            height={40}
           />
         </a>
       </AppBar>
